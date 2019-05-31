@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Pop Movies</string>
+    <string name="error_message">
+        An error has occurred. Please try again
+    </string>
+    <string name="movie_detail">MovieDetail</string>
+    <string name="action_most_popular">Most Popular</string>
+    <string name="action_top_rated">Top Rated</string>
+    <string name="action_now_playing">Now Playing</string>
+    <string name="filter">Filter</string>
+    <string name="rating_label">Rating:</string>
+    <string name="date_label">Date:</string>
+</resources>

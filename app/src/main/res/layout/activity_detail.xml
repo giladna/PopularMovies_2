@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:paddingTop="@dimen/padding_generic_x_2"
+            android:paddingLeft="@dimen/padding_generic"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:fontFamily="sans-serif"
+            android:textSize="28sp"
+            android:textColor="@color/cardview_light_background"
+            android:background="@color/titleBackground"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/poster_iv"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:scaleType="fitXY"
+                android:paddingTop="@dimen/padding_generic"
+                android:paddingLeft="@dimen/padding_generic"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding_generic"
+                        android:paddingLeft="@dimen/padding_generic_x_2"
+                        android:textSize="@dimen/textsize_generic"
+                        android:text="@string/rating_label"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/rating_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding_generic"
+                        android:paddingLeft="@dimen/padding_half_generic"
+                        android:paddingRight="@dimen/padding_half_generic"
+                        android:textSize="@dimen/textsize_generic"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding_generic"
+                        android:paddingLeft="@dimen/padding_generic_x_2"
+                        android:textSize="@dimen/textsize_generic"
+                        android:text="@string/date_label"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/release_date_tv"
+                        android:paddingTop="@dimen/padding_generic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="@dimen/padding_half_generic"
+                        android:paddingLeft="@dimen/padding_half_generic"
+                        android:textSize="@dimen/textsize_generic"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dadada"
+            android:layout_margin="@dimen/padding_generic" />
+
+        <TextView
+            android:id="@+id/overview_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textsize_generic"
+            android:paddingLeft="@dimen/padding_generic"
+            android:paddingRight="@dimen/padding_generic" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dadada"
+            android:layout_margin="@dimen/padding_generic" />
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_item_top">5dp</dimen>
+    <dimen name="padding_half_generic">8dp</dimen>
+    <dimen name="padding_generic">16dp</dimen>
+    <dimen name="padding_generic_x_2">32dp</dimen>
+    <dimen name="textsize_generic">16sp</dimen>
+    <dimen name="textsize_error">20sp</dimen>
+    <dimen name="textsize_generic_x_2">32sp</dimen>
+</resources>
