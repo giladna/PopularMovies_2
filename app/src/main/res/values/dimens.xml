@@ -7,4 +7,7 @@
     <dimen name="textsize_generic">16sp</dimen>
     <dimen name="textsize_error">20sp</dimen>
     <dimen name="textsize_generic_x_2">32sp</dimen>
+    <dimen name="grid_info_height">48dp</dimen>
+    <dimen name="grid_info_text_size">14sp</dimen>
+    <dimen name="image_padding">12dp</dimen>
 </resources>

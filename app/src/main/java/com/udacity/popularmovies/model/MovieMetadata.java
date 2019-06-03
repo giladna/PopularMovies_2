@@ -1,7 +1,10 @@
 package com.udacity.popularmovies.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -11,16 +14,20 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "movie")
 public class MovieMetadata implements Parcelable {
 
 
-    private static final String POSTER_URL_PREFIX = "https://image.tmdb.org/t/p/w185";
-    @SerializedName("popularity")
-    @Expose
-    private Double popularity;
+    private static final String POSTER_URL_PREFIX = "https://image.tmdb.org/t/p/w342";//w185";
+
+    @PrimaryKey
+    @NonNull
     @SerializedName("id")
     @Expose
     private Long id;
+    @SerializedName("popularity")
+    @Expose
+    private Double popularity;
     @SerializedName("video")
     @Expose
     private Boolean video;
@@ -58,6 +65,22 @@ public class MovieMetadata implements Parcelable {
     @Expose
     private String posterPath;
 
+//    public MovieMetadata(@NonNull Long id, Double popularity, Boolean video, Long voteCount, Double voteAverage, String title, String releaseDate, String originalLanguage, String originalTitle, List<Long> genreIds, String backdropPath, Boolean adult, String overview, String posterPath) {
+//        this.id = id;
+//        this.popularity = popularity;
+//        this.video = video;
+//        this.voteCount = voteCount;
+//        this.voteAverage = voteAverage;
+//        this.title = title;
+//        this.releaseDate = releaseDate;
+//        this.originalLanguage = originalLanguage;
+//        this.originalTitle = originalTitle;
+//        this.genreIds = genreIds;
+//        this.backdropPath = backdropPath;
+//        this.adult = adult;
+//        this.overview = overview;
+//        this.posterPath = posterPath;
+//    }
 
     public Double getPopularity() {
         return popularity;

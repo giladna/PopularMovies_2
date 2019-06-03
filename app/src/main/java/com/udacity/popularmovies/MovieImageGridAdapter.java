@@ -12,15 +12,22 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
+import com.udacity.popularmovies.database.AppDatabase;
 import com.udacity.popularmovies.model.MovieMetadata;
+import com.udacity.popularmovies.utilities.AppExecutors;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAdapter.MovieItemViewHolder> {
 
     private List<MovieMetadata> mMovieMetadataList;
 
     private Context mContext;
+    private AppDatabase mDatabase;
+    private Executor discExecutor;
+    private Executor networkExecutor;
+
     private final MovieImageGridOnClickHandler mClickHandler;
     private LayoutInflater mInflater;
 
@@ -28,6 +35,9 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
         mContext  = context;
         mClickHandler = clickHandler;
         mInflater = LayoutInflater.from(context);
+        this.mDatabase = AppDatabase.getDatabase(mContext);
+        this.discExecutor = AppExecutors.getInstance().diskIO();
+        this.networkExecutor = AppExecutors.getInstance().networkIO();
     }
 
     public void setMoviesData(List<MovieMetadata> moviesData) {
@@ -67,11 +77,13 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
     public class MovieItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView mMovieImageView;
+        TextView mMovieTitle;
 
 
         public MovieItemViewHolder(@NonNull View itemView) {
             super(itemView);
             mMovieImageView = itemView.findViewById(R.id.movie_image_view);
+            mMovieTitle = itemView.findViewById(R.id.title_text_view);
             //mMovieImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             //mMovieImageView.setAdjustViewBounds(true);
             itemView.setOnClickListener(this);
@@ -84,8 +96,9 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
 
         public void bind(int position) {
             if (mMovieMetadataList != null && !mMovieMetadataList.isEmpty()) {
+                String movieTitle = mMovieMetadataList.get(position).getTitle();
+                mMovieTitle.setText(movieTitle);
                  String imagePath = mMovieMetadataList.get(position).getPosterFullPath();
-
 //                Picasso.with(mContext)
 //                        .load(imagePath)
 //                        .placeholder(R.drawable.placeholder)

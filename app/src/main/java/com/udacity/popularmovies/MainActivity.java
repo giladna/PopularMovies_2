@@ -8,14 +8,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.udacity.popularmovies.model.DiscoverMoviesResponse;
@@ -32,6 +31,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static com.udacity.popularmovies.utilities.NetworkUtils.NOW_PLAYING;
 import static com.udacity.popularmovies.utilities.NetworkUtils.POPULARITY;
 import static com.udacity.popularmovies.utilities.NetworkUtils.VOTE_AVARAGE;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    private static final int NUM_OF_COL = 2;
+    private int numOfCols;
     private RecyclerView mRecyclerView;
     private MovieImageGridAdapter mMovieImageGridAdapter;
 
@@ -54,16 +54,16 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        numOfCols = 3;//getNumOfCols();
         setContentView(R.layout.activity_main);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
-
         mRecyclerView = findViewById(R.id.movies_recyclerview);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, NUM_OF_COL));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, numOfCols));
         //StaggeredGridLayoutManager sglm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         //mRecyclerView.setLayoutManager(sglm);
-        mRecyclerView.addItemDecoration(new GridItemDecoration(10, 2));
+        mRecyclerView.addItemDecoration(new GridItemDecoration(10, numOfCols));
         mMovieImageGridAdapter = new MovieImageGridAdapter(this, this);
         mRecyclerView.setAdapter(mMovieImageGridAdapter);
 
@@ -238,6 +238,29 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                 mMovieImageGridAdapter.setMoviesData(moviesData);
             } else {
                 showErrorMessage();
+            }
+        }
+    }
+
+    private int getNumOfCols() {
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+
+        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
+            if (width > 1000) {
+                return 3;
+            } else {
+                return 2;
+            }
+        } else {
+            if (width > 1700) {
+                return 5;
+            } else if (width > 1200) {
+                return 4;
+            } else {
+                return 3;
             }
         }
     }

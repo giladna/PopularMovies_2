@@ -22,6 +22,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:fontFamily="sans-serif"
             android:textSize="28sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/cardview_light_background"
             android:background="@color/titleBackground"/>
 

@@ -1,8 +1,13 @@
 package com.udacity.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,11 +20,12 @@ import com.udacity.popularmovies.model.MovieMetadata;
 public class DetailActivity extends AppCompatActivity {
     public static final String MOVIE_DETAILS = "movie_details";
 
-    ImageView poster_iv;
-    TextView title_tv;
-    TextView overview_tv;
-    TextView release_date_tv;
-    TextView rating_tv;
+    private ImageView poster_iv;
+    private TextView title_tv;
+    private TextView overview_tv;
+    private TextView release_date_tv;
+    private TextView rating_tv;
+    Long movieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(MovieMetadata movieMetadata) {
+        movieId = movieMetadata.getId();
         String originalTitle = movieMetadata.getOriginalTitle();
         String plotSynopsis = movieMetadata.getOverview();
         Double userRating = movieMetadata.getVoteAverage();
@@ -90,6 +97,33 @@ public class DetailActivity extends AppCompatActivity {
 
         if (releaseDate != null) {
             release_date_tv.setText(releaseDate);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share:
+                if (movieId != null) {
+                    ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(this)
+                            .setSubject("You must watch this!")
+                            .setText("https://www.themoviedb.org/movie/" + movieId)
+                            .setType("text/plain");
+                    try {
+                        intentBuilder.startChooser();
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this, R.string.sharing_blocked, Toast.LENGTH_LONG).show();
+                    }
+                }
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
         }
     }
 }
