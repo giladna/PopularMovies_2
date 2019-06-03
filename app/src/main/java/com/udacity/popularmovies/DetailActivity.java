@@ -111,8 +111,11 @@ public class DetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.share:
                 if (movieId != null) {
+                    String title = "Share this movie with friends!";
+                    String subject = "You must watch this movie!";
                     ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(this)
-                            .setSubject("You must watch this!")
+                            .setChooserTitle(title)
+                            .setSubject(subject)
                             .setText("https://www.themoviedb.org/movie/" + movieId)
                             .setType("text/plain");
                     try {
