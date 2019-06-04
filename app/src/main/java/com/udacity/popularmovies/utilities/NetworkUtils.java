@@ -32,6 +32,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     //http://api.themoviedb.org/3/movie/popular?language=en-US&api_key=8778f67f11a5a1dcb6ee731a56892416
+    //http://api.themoviedb.org/3/movie/more_details?language=en-US&api_key=8778f67f11a5a1dcb6ee731a56892416
     //https://image.tmdb.org/t/p/w185/nUXCJMnAiwCpNPZuJH2n6h5hGtF.jpg
 
     public static final String NOW_PLAYING = "now_playing";

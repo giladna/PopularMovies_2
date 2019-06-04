@@ -5,37 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class DiscoverMoviesResponse {
-
-    @SerializedName("page")
-    @Expose
-    private Long page;
-
-    @SerializedName("total_results")
-    @Expose
-    private Long totalResults;
-
-    @SerializedName("total_pages")
-    @Expose
-    private Long totalPages;
+public class DiscoverMoviesResponse<T> {
 
     @SerializedName("results")
     @Expose
-    private List<MovieMetadata> results;
+    private List<T> results;
 
-    public Long getPage() {
-        return page;
-    }
-
-    public Long getTotalResults() {
-        return totalResults;
-    }
-
-    public Long getTotalPages() {
-        return totalPages;
-    }
-
-    public List<MovieMetadata> getResults() {
+    public List<T> getResults() {
         return results;
     }
 }

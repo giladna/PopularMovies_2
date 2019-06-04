@@ -8,14 +8,23 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.view.Menu;
 import android.view.MenuItem;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.udacity.popularmovies.model.MovieDetailsMetadata;
 import com.udacity.popularmovies.model.MovieMetadata;
+import com.udacity.popularmovies.utilities.MovieAPI;
+import com.udacity.popularmovies.utilities.NetworkClient;
 
+import java.math.BigDecimal;
+
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class DetailActivity extends AppCompatActivity {
     public static final String MOVIE_DETAILS = "movie_details";
@@ -24,8 +33,9 @@ public class DetailActivity extends AppCompatActivity {
     private TextView title_tv;
     private TextView overview_tv;
     private TextView release_date_tv;
+    private TextView duration_tv;
     private TextView rating_tv;
-    Long movieId;
+    private MovieMetadata movieMetadata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,7 @@ public class DetailActivity extends AppCompatActivity {
         title_tv = findViewById(R.id.title_tv);
         overview_tv = findViewById(R.id.overview_tv);
         release_date_tv = findViewById(R.id.release_date_tv);
+        duration_tv = findViewById(R.id.duration_tv);
         rating_tv = findViewById(R.id.rating_tv);
 
         Intent intent = getIntent();
@@ -76,12 +87,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(MovieMetadata movieMetadata) {
-        movieId = movieMetadata.getId();
+        Long movieId = movieMetadata.getId();
         String originalTitle = movieMetadata.getOriginalTitle();
         String plotSynopsis = movieMetadata.getOverview();
         Double userRating = movieMetadata.getVoteAverage();
         String releaseDate = movieMetadata.getReleaseDate();
-
 
         if (originalTitle != null) {
             title_tv.setText(originalTitle);
@@ -98,6 +108,9 @@ public class DetailActivity extends AppCompatActivity {
         if (releaseDate != null) {
             release_date_tv.setText(releaseDate);
         }
+        if (movieId != null) {
+            fetchMovieDetails(movieId);
+        }
     }
 
     @Override
@@ -110,13 +123,13 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.share:
-                if (movieId != null) {
+                if (movieMetadata != null) {
                     String title = "Share this movie with friends!";
                     String subject = "You must watch this movie!";
                     ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(this)
                             .setChooserTitle(title)
                             .setSubject(subject)
-                            .setText("https://www.themoviedb.org/movie/" + movieId)
+                            .setText(("https://www.themoviedb.org/movie/" + movieMetadata.getId()))
                             .setType("text/plain");
                     try {
                         intentBuilder.startChooser();
@@ -125,8 +138,48 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
                 return true;
-                default:
-                    return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void fetchMovieDetails(Long movieId) {
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+
+        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+        Call<MovieDetailsMetadata> call = movieAPI.getMovieDetails(new BigDecimal(movieId).intValueExact(), BuildConfig.MOVIE_DB_API_KEY);
+
+        if (call == null) {
+            return;
+        }
+
+        //mLoadingIndicator.setVisibility(View.VISIBLE);
+        call.enqueue(new retrofit2.Callback<MovieDetailsMetadata>() {
+            @Override
+            public void onResponse(Call<MovieDetailsMetadata> call,
+                                   Response<MovieDetailsMetadata> response) {
+
+                if (response.body() != null) {
+                    final MovieDetailsMetadata movieDetailsMetadata = response.body();
+                    //mLoadingIndicator.setVisibility(View.INVISIBLE);
+                    if (movieDetailsMetadata != null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                duration_tv.setText(String.valueOf(movieDetailsMetadata.getRuntime()));
+                            }
+                        });
+                    } else {
+                        //showErrorMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable exception) {
+                //showErrorMessage();
+            }
+        });
+
     }
 }

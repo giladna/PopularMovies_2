@@ -17,13 +17,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.udacity.popularmovies.model.DiscoverMoviesResponse;
 import com.udacity.popularmovies.model.MovieMetadata;
 import com.udacity.popularmovies.utilities.MovieAPI;
 import com.udacity.popularmovies.utilities.NetworkClient;
 import com.udacity.popularmovies.utilities.NetworkUtils;
 
+import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -73,10 +79,10 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     private void loadMoviesData(String filterType) {
         showWMoviesDataView();
         //Using Async
-        new FetchMoviesTask().execute(filterType);
+        //new FetchMoviesTask().execute(filterType);
 
         //Using Retrofit
-        //fetchMovies(filterType);
+        fetchMovies(filterType);
     }
 
     @Override
@@ -156,11 +162,11 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     }
 
     //Retrofit
-    private void fetchMovies(String filterType) {
+    private void fetchMovies(String filterType, Integer... movieId) {
         Retrofit retrofit = NetworkClient.getRetrofitClient();
 
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
-        Call<DiscoverMoviesResponse> call = null;
+        Call<DiscoverMoviesResponse<MovieMetadata>> call = null;
 
         switch (filterType) {
             case NOW_PLAYING:
@@ -178,16 +184,17 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         }
 
         mLoadingIndicator.setVisibility(View.VISIBLE);
-        call.enqueue(new Callback<DiscoverMoviesResponse>() {
+        call.enqueue(new Callback<DiscoverMoviesResponse<MovieMetadata>>() {
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(Call<DiscoverMoviesResponse<MovieMetadata>> call,
+                                   Response<DiscoverMoviesResponse<MovieMetadata>> response) {
 
                 if (response.body() != null) {
-                    DiscoverMoviesResponse discoverMoviesResponse = (DiscoverMoviesResponse) response.body();
+                    List<MovieMetadata> discoverMoviesResponse =  response.body().getResults();
                     mLoadingIndicator.setVisibility(View.INVISIBLE);
-                    if (discoverMoviesResponse.getResults() != null) {
+                    if (discoverMoviesResponse != null) {
                         showWMoviesDataView();
-                        mMovieImageGridAdapter.setMoviesData(discoverMoviesResponse.getResults());
+                        mMovieImageGridAdapter.setMoviesData(discoverMoviesResponse);
                     } else {
                         showErrorMessage();
                     }
@@ -221,9 +228,15 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
 
             try {
                 String jsonMoviesResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
+                JsonParser parser = new JsonParser();
+                JsonObject jsonMoviesResponseJsonObject = parser.parse(jsonMoviesResponse).getAsJsonObject();
+                JsonArray resultsJsonArray = jsonMoviesResponseJsonObject.get("results").getAsJsonArray();
                 Gson gson = new Gson();
-                DiscoverMoviesResponse discoverMoviesResponse = gson.fromJson(jsonMoviesResponse, DiscoverMoviesResponse.class);
-                return discoverMoviesResponse.getResults();
+                //MovieMetadata[] mcArray = gson.fromJson(resultsJsonArray.getAsString(), MovieMetadata[].class);
+                Type listType = new TypeToken<List<MovieMetadata>>(){}.getType();
+                List<MovieMetadata> discoverMoviesResponse = new Gson().fromJson(resultsJsonArray, listType);
+                //DiscoverMoviesResponse<MovieMetadata> discoverMoviesResponse = gson.fromJson(jsonMoviesResponse, DiscoverMoviesResponse.class);
+                return discoverMoviesResponse;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

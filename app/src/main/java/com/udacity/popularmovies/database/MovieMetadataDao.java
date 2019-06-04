@@ -17,7 +17,7 @@ public interface MovieMetadataDao {
     LiveData<List<MovieMetadata>> getAll();
 
     @Query("SELECT * FROM movie WHERE id = :id")
-    MovieMetadata getMovieById(String id);
+    LiveData<List<MovieMetadata>> getMovieById(String id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MovieMetadata movie);

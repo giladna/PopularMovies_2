@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.udacity.popularmovies.database.AppDatabase;
 import com.udacity.popularmovies.model.MovieMetadata;

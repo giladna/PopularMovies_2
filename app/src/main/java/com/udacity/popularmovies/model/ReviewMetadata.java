@@ -14,6 +14,9 @@ public class ReviewMetadata implements Parcelable {
     @SerializedName("content")
     @Expose
     public String content;
+    @Expose
+    @SerializedName("url")
+    private String url;
 
     public ReviewMetadata() {
     }
@@ -26,9 +29,14 @@ public class ReviewMetadata implements Parcelable {
         return content;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
     private ReviewMetadata(Parcel in) {
         author = in.readString();
         content = in.readString();
+        url = in.readString();
     }
 
     @Override
@@ -40,6 +48,7 @@ public class ReviewMetadata implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(author);
         parcel.writeString(content);
+        parcel.writeString(url);
     }
 
     public static final Parcelable.Creator<ReviewMetadata> CREATOR = new Parcelable.Creator<ReviewMetadata>() {
