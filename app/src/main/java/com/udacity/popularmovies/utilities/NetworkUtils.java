@@ -38,6 +38,8 @@ public class NetworkUtils {
     public static final String NOW_PLAYING = "now_playing";
     public static final String POPULARITY = "popularity";
     public static final String VOTE_AVARAGE = "vote_average";
+    public static final String FAVORITES = "favorits";
+
 
     final static String MOVIES_DB_BASE_URL =
             "https://api.themoviedb.org/3/";

@@ -5,13 +5,13 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
-
 import com.udacity.popularmovies.BuildConfig;
 import com.udacity.popularmovies.database.AppDatabase;
 import com.udacity.popularmovies.model.DiscoverMoviesResponse;
 import com.udacity.popularmovies.model.MovieMetadata;
 import com.udacity.popularmovies.utilities.MovieAPI;
 import com.udacity.popularmovies.utilities.NetworkClient;
+import com.udacity.popularmovies.utilities.NetworkUtils;
 
 import java.util.List;
 
@@ -29,13 +29,13 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        database = AppDatabase.getDatabase(getApplication());
+        database = AppDatabase.getDatabaseInstance(getApplication());
     }
 
     public LiveData<List<MovieMetadata>> getMostPopularMovies() {
         if (mostPopularMovies == null) {
             mostPopularMovies = new MutableLiveData<>();
-            loadMovies(0, 1);
+            loadMovies(NetworkUtils.POPULARITY, 1);
         }
         return mostPopularMovies;
     }
@@ -43,7 +43,7 @@ public class MainViewModel extends AndroidViewModel {
     public LiveData<List<MovieMetadata>> getTopRatedMovies() {
         if (topRatedMovies == null) {
             topRatedMovies = new MutableLiveData<>();
-            loadMovies(1, 1);
+            loadMovies(NetworkUtils.VOTE_AVARAGE, 1);
         }
         return topRatedMovies;
     }
@@ -64,10 +64,10 @@ public class MainViewModel extends AndroidViewModel {
         return currentFilter;
     }
 
-    public void loadMovies(int sorting, int page) {
+    public void loadMovies(String filter, int page) {
         Retrofit retrofit = NetworkClient.getRetrofitClient();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
-        if (sorting == 0) {
+        if (NetworkUtils.POPULARITY.equals(filter)) {
             Call<DiscoverMoviesResponse<MovieMetadata>> call = movieAPI.getPopularMovies(
                     BuildConfig.MOVIE_DB_API_KEY, page);
 
@@ -94,7 +94,7 @@ public class MainViewModel extends AndroidViewModel {
                     currentFilter.setValue(-1);
                 }
             });
-        } else if (sorting == 1) {
+        } else if (NetworkUtils.VOTE_AVARAGE.equals(filter)) {
             Call<DiscoverMoviesResponse<MovieMetadata>> call = movieAPI.getTopRatedMovies(
                     BuildConfig.MOVIE_DB_API_KEY, page);
 

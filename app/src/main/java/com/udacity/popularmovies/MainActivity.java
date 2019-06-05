@@ -1,5 +1,7 @@
 package com.udacity.popularmovies;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -21,13 +23,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.udacity.popularmovies.database.AppDatabase;
 import com.udacity.popularmovies.model.DiscoverMoviesResponse;
+import com.udacity.popularmovies.model.MovieDetailsMetadata;
 import com.udacity.popularmovies.model.MovieMetadata;
 import com.udacity.popularmovies.utilities.MovieAPI;
 import com.udacity.popularmovies.utilities.NetworkClient;
 import com.udacity.popularmovies.utilities.NetworkUtils;
+import com.udacity.popularmovies.viewmodel.MainViewModel;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +44,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static com.udacity.popularmovies.utilities.NetworkUtils.FAVORITES;
 import static com.udacity.popularmovies.utilities.NetworkUtils.NOW_PLAYING;
 import static com.udacity.popularmovies.utilities.NetworkUtils.POPULARITY;
 import static com.udacity.popularmovies.utilities.NetworkUtils.VOTE_AVARAGE;
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     }
 
     private int numOfCols;
+    private AppDatabase mDatabase;
+    private MainViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private MovieImageGridAdapter mMovieImageGridAdapter;
 
@@ -60,9 +69,11 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        numOfCols = 3;//getNumOfCols();
         setContentView(R.layout.activity_main);
+        numOfCols = 3;//getNumOfCols();
+        mDatabase = AppDatabase.getDatabaseInstance(this);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
+        mViewModel = ViewModelProviders.of(this).get(MainViewModel .class);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.movies_recyclerview);
 
@@ -72,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         mRecyclerView.addItemDecoration(new GridItemDecoration(10, numOfCols));
         mMovieImageGridAdapter = new MovieImageGridAdapter(this, this);
         mRecyclerView.setAdapter(mMovieImageGridAdapter);
-
+        //mViewModel.loadMovies(FAVORITES, 0);
         loadMoviesData(POPULARITY);
     }
 
@@ -107,11 +118,48 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     }
 
     private void launchDetailActivity(MovieMetadata movieMetadata) {
-        Context context = MainActivity.this;
-        Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(DetailActivity.MOVIE_DETAILS, movieMetadata);
-        context.startActivity(intent);
+        fetchMovieDetailsAndStart(movieMetadata);
     }
+
+    private void fetchMovieDetailsAndStart(final MovieMetadata movieMetadata) {
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+
+        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+        Call<MovieDetailsMetadata> call = movieAPI.getMovieDetails(new BigDecimal(movieMetadata.getId()).intValueExact(), BuildConfig.MOVIE_DB_API_KEY);
+
+        if (call == null) {
+            return;
+        }
+
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        call.enqueue(new retrofit2.Callback<MovieDetailsMetadata>() {
+            @Override
+            public void onResponse(Call<MovieDetailsMetadata> call,
+                                   Response<MovieDetailsMetadata> response) {
+
+                if (response.body() != null) {
+                    final MovieDetailsMetadata movieDetailsMetadata = response.body();
+                    mLoadingIndicator.setVisibility(View.INVISIBLE);
+                    if (movieDetailsMetadata != null) {
+                        Context context = MainActivity.this;
+                        Intent intent = new Intent(context, DetailActivity.class);
+                        intent.putExtra(DetailActivity.MOVIE_METADATA, movieMetadata);
+                        intent.putExtra(DetailActivity.MOVIE_DETAILS, movieDetailsMetadata);
+                        context.startActivity(intent);
+                    } else {
+                        showErrorMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable exception) {
+                showErrorMessage();
+            }
+        });
+
+    }
+
 
     // This method creates the menu on the app
     @Override
@@ -157,12 +205,35 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
 
             //Retrofit
             fetchMovies(NOW_PLAYING);
+        }  else if (id == R.id.favorits_menu) {
+            item.setChecked(true);
+
+            //Room
+            fetchMovies(FAVORITES);
         }
         return super.onOptionsItemSelected(item);
     }
 
     //Retrofit
     private void fetchMovies(String filterType, Integer... movieId) {
+
+        if (FAVORITES.equals(filterType)) {
+           new Thread(new Runnable() {
+               @Override
+               public void run() {
+                   final List<MovieMetadata> movieMetadataList = mDatabase.movieMetadataDao().selectAll();
+                   runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           mMovieImageGridAdapter.setMoviesData(movieMetadataList);
+                       }
+                   });
+               }
+           }).start();
+
+            return;
+        }
+
         Retrofit retrofit = NetworkClient.getRetrofitClient();
 
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);

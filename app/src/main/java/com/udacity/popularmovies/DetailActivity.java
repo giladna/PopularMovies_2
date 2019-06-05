@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -27,7 +28,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class DetailActivity extends AppCompatActivity {
-    public static final String MOVIE_DETAILS = "movie_details";
+    public static final String MOVIE_METADATA = "movie_metadata";
+    public static final String MOVIE_DETAILS  = "movie_details";
 
     private ImageView poster_iv;
     private TextView title_tv;
@@ -36,6 +38,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView duration_tv;
     private TextView rating_tv;
     private MovieMetadata movieMetadata;
+    private MovieDetailsMetadata movieDetailsMetadata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +57,13 @@ public class DetailActivity extends AppCompatActivity {
             closeOnError();
             return;
         }
-        MovieMetadata movieMetadata = (MovieMetadata) intent.getParcelableExtra(MOVIE_DETAILS);
-        if (movieMetadata == null) {
+        movieMetadata = (MovieMetadata) intent.getParcelableExtra(MOVIE_METADATA);
+        movieDetailsMetadata = (MovieDetailsMetadata) intent.getParcelableExtra(MOVIE_DETAILS);
+        if (movieMetadata == null || movieDetailsMetadata == null) {
             closeOnError();
             return;
         }
-        populateUI(movieMetadata);
+        populateUI(movieMetadata, movieDetailsMetadata);
         loadPoster(movieMetadata);
     }
 
@@ -86,12 +90,13 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI(MovieMetadata movieMetadata) {
+    private void populateUI(MovieMetadata movieMetadata, MovieDetailsMetadata movieDetailsMetadata) {
         Long movieId = movieMetadata.getId();
         String originalTitle = movieMetadata.getOriginalTitle();
         String plotSynopsis = movieMetadata.getOverview();
         Double userRating = movieMetadata.getVoteAverage();
         String releaseDate = movieMetadata.getReleaseDate();
+
 
         if (originalTitle != null) {
             title_tv.setText(originalTitle);
@@ -105,11 +110,10 @@ public class DetailActivity extends AppCompatActivity {
             rating_tv.setText(String.valueOf(userRating) + "/10");
         }
 
+        duration_tv.setText(String.valueOf(movieDetailsMetadata.getRuntime()));
+
         if (releaseDate != null) {
             release_date_tv.setText(releaseDate);
-        }
-        if (movieId != null) {
-            fetchMovieDetails(movieId);
         }
     }
 
@@ -126,10 +130,13 @@ public class DetailActivity extends AppCompatActivity {
                 if (movieMetadata != null) {
                     String title = "Share this movie with friends!";
                     String subject = "You must watch this movie!";
+                    String text = (!TextUtils.isEmpty(movieDetailsMetadata.getHomepage()) ?
+                                   movieDetailsMetadata.getHomepage() : "https://www.themoviedb.org/movie/" + movieMetadata.getId());
+
                     ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(this)
                             .setChooserTitle(title)
                             .setSubject(subject)
-                            .setText(("https://www.themoviedb.org/movie/" + movieMetadata.getId()))
+                            .setText(text)
                             .setType("text/plain");
                     try {
                         intentBuilder.startChooser();
@@ -143,7 +150,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    private void fetchMovieDetails(Long movieId) {
+    private void fetchMovieTrailers(Long movieId) {
         Retrofit retrofit = NetworkClient.getRetrofitClient();
 
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);

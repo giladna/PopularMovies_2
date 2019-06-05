@@ -1,6 +1,7 @@
 package com.udacity.popularmovies.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,54 +17,56 @@ import com.google.gson.annotations.SerializedName;
 @Entity(tableName = "movie")
 public class MovieMetadata implements Parcelable {
 
+    public MovieMetadata() {
+    }
 
     private static final String POSTER_URL_PREFIX = "https://image.tmdb.org/t/p/w342";//w185";
 
 
-    @SerializedName("popularity")
-    @Expose
-    private Double popularity;
     @PrimaryKey
     @NonNull
     @SerializedName("id")
     @Expose
-    private Long id;
+    public Long id;
+    @SerializedName("popularity")
+    @Expose
+    public Double popularity;
     @SerializedName("video")
     @Expose
-    private Boolean video;
+    public Boolean video;
     @SerializedName("vote_count")
     @Expose
-    private Long voteCount;
+    public Long voteCount;
     @SerializedName("vote_average")
     @Expose
-    private Double voteAverage;
+    public Double voteAverage;
     @SerializedName("title")
     @Expose
-    private String title;
+    public String title;
     @SerializedName("release_date")
     @Expose
-    private String releaseDate;
+    public String releaseDate;
     @SerializedName("original_language")
     @Expose
-    private String originalLanguage;
+    public String originalLanguage;
     @SerializedName("original_title")
     @Expose
-    private String originalTitle;
+    public String originalTitle;
     @SerializedName("genre_ids")
     @Expose
-    private List<Long> genreIds = null;
+    public List<Long> genreIds = null;
     @SerializedName("backdrop_path")
     @Expose
-    private String backdropPath;
+    public String backdropPath;
     @SerializedName("adult")
     @Expose
-    private Boolean adult;
+    public Boolean adult;
     @SerializedName("overview")
     @Expose
-    private String overview;
+    public String overview;
     @SerializedName("poster_path")
     @Expose
-    private String posterPath;
+    public String posterPath;
 
     public Double getPopularity() {
         return popularity;
@@ -142,8 +145,8 @@ public class MovieMetadata implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.popularity);
         dest.writeValue(this.id);
+        dest.writeValue(this.popularity);
         dest.writeValue(this.video);
         dest.writeValue(this.voteCount);
         dest.writeValue(this.voteAverage);
@@ -158,7 +161,8 @@ public class MovieMetadata implements Parcelable {
         dest.writeString(this.posterPath);
     }
 
-    public MovieMetadata(Double popularity, Long id, Boolean video, Long voteCount, Double voteAverage, String title, String releaseDate, String originalLanguage, String originalTitle, List<Long> genreIds, String backdropPath, Boolean adult, String overview, String posterPath) {
+    @Ignore
+    public MovieMetadata(Long id, Double popularity, Boolean video, Long voteCount, Double voteAverage, String title, String releaseDate, String originalLanguage, String originalTitle, List<Long> genreIds, String backdropPath, Boolean adult, String overview, String posterPath) {
         this.popularity = popularity;
         this.id = id;
         this.video = video;
@@ -176,8 +180,8 @@ public class MovieMetadata implements Parcelable {
     }
 
     protected MovieMetadata(Parcel in) {
-        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
         this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
         this.video = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.voteCount = (Long) in.readValue(Long.class.getClassLoader());
         this.voteAverage = (Double) in.readValue(Double.class.getClassLoader());
