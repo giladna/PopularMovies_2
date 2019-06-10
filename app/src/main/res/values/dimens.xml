@@ -4,10 +4,33 @@
     <dimen name="padding_half_generic">8dp</dimen>
     <dimen name="padding_generic">16dp</dimen>
     <dimen name="padding_generic_x_2">32dp</dimen>
+
     <dimen name="textsize_generic">16sp</dimen>
     <dimen name="textsize_error">20sp</dimen>
     <dimen name="textsize_generic_x_2">32sp</dimen>
+
     <dimen name="grid_info_height">48dp</dimen>
     <dimen name="grid_info_text_size">14sp</dimen>
-    <dimen name="image_padding">12dp</dimen>
+
+    <dimen name="image_paddig">12dp</dimen>
+
+    <dimen name="image_size">48dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+
+    <dimen name="video_item_width">208dp</dimen>
+    <dimen name="video_item_height">117dp</dimen>
+    <dimen name="video_item_padding">16dp</dimen>
+    <dimen name="video_item_text_size">14sp</dimen>
+    <dimen name="video_name_height">48dp</dimen>
+
+    <dimen name="review_item_width">300dp</dimen>
+    <dimen name="review_author_height">32dp</dimen>
+    <dimen name="review_author_text_size">24sp</dimen>
+    <dimen name="review_content_height">171dp</dimen>
+    <dimen name="review_content_text_size">14sp</dimen>
+    <dimen name="review_view_more_height">48dp</dimen>
+
+
 </resources>

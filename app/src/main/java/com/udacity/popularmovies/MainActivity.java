@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                                    Response<DiscoverMoviesResponse<MovieMetadata>> response) {
 
                 if (response.body() != null) {
-                    List<MovieMetadata> discoverMoviesResponse =  response.body().getResults();
+                    List<MovieMetadata> discoverMoviesResponse = response.body().getResults();
                     mLoadingIndicator.setVisibility(View.INVISIBLE);
                     if (discoverMoviesResponse != null) {
                         showWMoviesDataView();

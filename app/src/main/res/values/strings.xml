@@ -22,4 +22,7 @@
     <string name="movie_transition" translatable="false">movie_transition</string>
     <string name="review_transition" translatable="false">review_transition</string>
     <string name="favorite">Favorite</string>
+    <string name="video">Video</string>
+    <string name="read_more">Read More</string>
+    <string name="view_more">View More</string>
 </resources>
