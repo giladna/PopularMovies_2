@@ -140,5 +140,32 @@
             android:layout_height="1dp"
             android:background="#dadada"
             android:layout_margin="@dimen/padding_generic" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/videos_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dadada"
+            android:layout_margin="@dimen/padding_generic" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reviews_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+        <!--<include-->
+            <!--android:id="@+id/movie_videos"-->
+            <!--layout="@layout/detail_video" />-->
+
+        <!--<include-->
+            <!--android:id="@+id/movie_reviews"-->
+            <!--layout="@layout/detail_review" />-->
+
     </LinearLayout>
 </ScrollView>

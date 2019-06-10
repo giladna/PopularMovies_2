@@ -2,12 +2,15 @@ package com.udacity.popularmovies;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +51,10 @@ public class DetailActivity extends AppCompatActivity {
     private TextView rating_tv;
     private MovieMetadata movieMetadata;
     private MovieDetailsMetadata movieDetailsMetadata;
+    private RecyclerView mVideosRecyclerView;
+    private RecyclerView mReviewsRecyclerView;
+    private VideoAdapter mVideoAdapter;
+    private ReviewAdapter mReviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +169,20 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void fetchMovieTrailers(Long movieId) {
+        mVideosRecyclerView = findViewById(R.id.videos_recyclerview);
+
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mVideosRecyclerView.setLayoutManager(layoutManager);
+        mVideosRecyclerView.setHasFixedSize(true);
+        mVideosRecyclerView.setNestedScrollingEnabled(false);
+
+        RecyclerView.ItemDecoration itemDecoration = new HorizontalItemDecoration(this);
+        mVideosRecyclerView.addItemDecoration(itemDecoration);
+
+        mVideoAdapter = new VideoAdapter(this);
+        mVideosRecyclerView.setAdapter(mVideoAdapter);
+
         Retrofit retrofit = NetworkClient.getRetrofitClient();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
@@ -178,26 +199,44 @@ public class DetailActivity extends AppCompatActivity {
                     List<VideoMetadata> discoverVideosResponse =  response.body().getResults();
                     //mLoadingIndicator.setVisibility(View.INVISIBLE);
                     if (discoverVideosResponse != null) {
-                        for (VideoMetadata videoMetadata : discoverVideosResponse) {
-                            System.out.println(videoMetadata.videoName);
-                            //https://img.youtube.com/vi/9g5knnlF7Zo/0.jpg
+                        List<VideoMetadata> videoMetadataResults = response.body().getResults();
+                        mVideoAdapter.addVideosList(videoMetadataResults);
+                        if (videoMetadataResults.size() == 0) {
+                            mVideosRecyclerView.setVisibility(View.GONE);
                         }
-                        //showWVideoDataView();
-                        //mVideoImageAdapter.setMoviesData(discoverMoviesResponse);
                     } else {
-                        //showErrorMessage();
+                        showErrorMessage();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call call, Throwable exception) {
-                //showErrorMessage();
+                showErrorMessage();
             }
         });
     }
 
+    private void showErrorMessage() {
+        Toast.makeText(DetailActivity.this, getString(R.string.error_message), Toast.LENGTH_LONG).show();
+    }
+
     private void fetchMovieReviews(Long movieId) {
+
+        mReviewsRecyclerView = findViewById(R.id.reviews_recyclerview);
+
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mReviewsRecyclerView.setLayoutManager(layoutManager);
+        mReviewsRecyclerView.setHasFixedSize(true);
+        mReviewsRecyclerView.setNestedScrollingEnabled(false);
+
+        RecyclerView.ItemDecoration itemDecoration = new HorizontalItemDecoration(this);
+        mReviewsRecyclerView.addItemDecoration(itemDecoration);
+
+        mReviewAdapter = new ReviewAdapter(this);
+        mReviewsRecyclerView.setAdapter(mReviewAdapter);
+
         Retrofit retrofit = NetworkClient.getRetrofitClient();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
@@ -211,33 +250,30 @@ public class DetailActivity extends AppCompatActivity {
                                    Response<DiscoverMoviesResponse<ReviewMetadata>> response) {
 
                 if (response.body() != null) {
-                    List<ReviewMetadata> discoverReviewResponse =  response.body().getResults();
-                    //mLoadingIndicator.setVisibility(View.INVISIBLE);
-                    if (discoverReviewResponse != null) {
-                        //showWVideoDataView();
-                        //mVideoImageAdapter.setMoviesData(discoverMoviesResponse);
-                    } else {
-                        //showErrorMessage();
+                    List<ReviewMetadata> reviewMetadataResults =  response.body().getResults();
+                    mReviewAdapter.addReviewsList(reviewMetadataResults);
+                    if (reviewMetadataResults.size() == 0) {
+                        mReviewsRecyclerView.setVisibility(View.GONE);
                     }
                 }
             }
 
             @Override
             public void onFailure(Call call, Throwable exception) {
-                //showErrorMessage();
+                showErrorMessage();
             }
         });
     }
 
-    public void onClickExpand(View view, ReviewMetadata reviewMetadata) {
-//        Intent intent = new Intent(this, ReviewActivity.class);
-//        ActivityOptionsCompat options = ActivityOptionsCompat.
-//                makeSceneTransitionAnimation(this,
-//                        view,
-//                        ViewCompat.getTransitionName(view));
-//        intent.putExtra(ReviewActivity.REVIEW_INTENT_KEY, review);
-//        intent.putExtra(ReviewActivity.MOVIE_TITLE_KEY, movie.originalTitle);
-//        intent.putExtra(ReviewActivity.COLOR_ACTIONBAR_KEY, color);
-//        startActivity(intent, options.toBundle());
+    public void onReviewClicked(View view, ReviewMetadata reviewMetadata) {
+        if (reviewMetadata != null && !TextUtils.isEmpty(reviewMetadata.getUrl())) {
+
+            String url = reviewMetadata.getUrl();
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+            browserIntent.setData(Uri.parse(url));
+            if (browserIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(browserIntent);
+            }
+        }
     }
 }

@@ -35,6 +35,7 @@
                 android:singleLine="true"
                 android:text="@{reviewMetadata.author}"
                 android:textColor="@color/colorBlack"
+                android:textStyle="bold"
                 android:textSize="@dimen/review_author_text_size"
                 android:transitionName="@string/review_transition" />
 
@@ -49,7 +50,7 @@
                 android:layout_marginStart="@dimen/margin_medium"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:ellipsize="end"
-                android:maxLines="10"
+                android:maxLines="6"
                 android:minHeight="@dimen/review_content_height"
                 android:text="@{reviewMetadata.content}"
                 android:textColor="@color/colorBlack"
@@ -76,7 +77,7 @@
                 android:layout_toLeftOf="@id/expandIv"
                 android:layout_toStartOf="@id/expandIv"
                 android:gravity="center_vertical"
-                android:onClick="@{() -> presenter.onClickExpand(authorTv, reviewMetadata)}"
+                android:onClick="@{() -> presenter.onReviewClicked(authorTv, reviewMetadata)}"
                 android:text="@string/view_more"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/colorBlack" />
@@ -89,7 +90,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/divider"
                 android:contentDescription="@string/read_more"
-                android:onClick="@{(view) -> presenter.onClickExpand(view, reviewMetadata)}"
+                android:onClick="@{(view) -> presenter.onReviewClicked(view, reviewMetadata)}"
                 android:padding="@dimen/image_size"
                 app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
 

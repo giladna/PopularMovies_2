@@ -15,6 +15,7 @@
     <dimen name="image_paddig">12dp</dimen>
 
     <dimen name="image_size">48dp</dimen>
+    <dimen name="margin_mini">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_large">24dp</dimen>
