@@ -172,7 +172,8 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/textsize_generic"
             android:paddingLeft="@dimen/padding_generic"
-            android:paddingRight="@dimen/padding_generic" />
+            android:paddingRight="@dimen/padding_generic"
+            android:textColor="@color/colorBlack" />
 
         <View
             android:layout_width="match_parent"
@@ -181,7 +182,7 @@
             android:layout_margin="@dimen/padding_generic" />
 
         <TextView
-            android:id="@+id/videosLabel"
+            android:id="@+id/videosLabelTv"
             style="@style/Subject"
             android:text="@string/videos" />
 
@@ -198,7 +199,7 @@
             android:layout_margin="@dimen/padding_generic" />
 
         <TextView
-            android:id="@+id/reviewsLabel"
+            android:id="@+id/reviewsLabelTv"
             style="@style/Subject"
             android:text="@string/reviews" />
 

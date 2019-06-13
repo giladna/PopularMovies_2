@@ -30,7 +30,7 @@
     <dimen name="review_author_height">32dp</dimen>
     <dimen name="review_author_text_size">24sp</dimen>
     <dimen name="review_content_height">171dp</dimen>
-    <dimen name="review_content_text_size">14sp</dimen>
+    <dimen name="review_content_text_size">16sp</dimen>
     <dimen name="review_view_more_height">48dp</dimen>
 
 

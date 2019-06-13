@@ -1,8 +1,8 @@
 package com.udacity.popularmovies;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ShareCompat;
@@ -55,6 +55,10 @@ public class DetailActivity extends AppCompatActivity {
     private TextView rating_tv;
     private CheckBox favorits_cb;
 
+    private TextView videosLabelTv;
+    private TextView reviewsLabelTv;
+
+
     private MovieMetadata movieMetadata;
     private MovieDetailsMetadata movieDetailsMetadata;
     private RecyclerView mVideosRecyclerView;
@@ -77,34 +81,8 @@ public class DetailActivity extends AppCompatActivity {
         duration_tv = findViewById(R.id.duration_tv);
         rating_tv = findViewById(R.id.rating_tv);
         favorits_cb = findViewById(R.id.favorite_check_box);
-        favorits_cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                                                   @Override
-                                                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                                       String snackBarText;
-
-                                                       if (isChecked) {
-                                                           diskExecutor.execute(new Runnable() {
-                                                               @Override
-                                                               public void run() {
-                                                                   mDatabase.movieMetadataDao().insert(movieMetadata);
-                                                               }
-                                                           });
-                                                           snackBarText = DetailActivity.this.getString(R.string.added_to_favorites, movieMetadata.getOriginalTitle());
-
-                                                       } else {
-                                                           diskExecutor.execute(new Runnable() {
-                                                               @Override
-                                                               public void run() {
-                                                                   mDatabase.movieMetadataDao().delete(movieMetadata);
-                                                               }
-                                                           });
-                                                           snackBarText = DetailActivity.this.getString(R.string.remove_from_favorites, movieMetadata.getOriginalTitle());
-
-                                                       }
-                                                       Snackbar.make(buttonView, snackBarText, Snackbar.LENGTH_SHORT).show();
-                                                   }
-                                               }
-        );
+        videosLabelTv = findViewById(R.id.videosLabelTv);
+        reviewsLabelTv = findViewById(R.id.reviewsLabelTv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -171,8 +149,40 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         favorits_cb.setChecked(movieMetadata.isInFavorites());
+        addCheckBoxListener(movieMetadata);
         fetchMovieTrailers(movieId);
         fetchMovieReviews(movieId);
+    }
+
+    private void addCheckBoxListener(final MovieMetadata movieMetadata) {
+        favorits_cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                                                   @Override
+                                                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                       String snackBarText;
+
+                                                       if (isChecked) {
+                                                           diskExecutor.execute(new Runnable() {
+                                                               @Override
+                                                               public void run() {
+                                                                   mDatabase.movieMetadataDao().insert(movieMetadata);
+                                                               }
+                                                           });
+                                                           snackBarText = DetailActivity.this.getString(R.string.added_to_favorites, movieMetadata.getOriginalTitle());
+
+                                                       } else {
+                                                           diskExecutor.execute(new Runnable() {
+                                                               @Override
+                                                               public void run() {
+                                                                   mDatabase.movieMetadataDao().delete(movieMetadata);
+                                                               }
+                                                           });
+                                                           snackBarText = DetailActivity.this.getString(R.string.remove_from_favorites, movieMetadata.getOriginalTitle());
+
+                                                       }
+                                                       Snackbar.make(buttonView, snackBarText, Snackbar.LENGTH_SHORT).show();
+                                                   }
+                                               }
+        );
     }
 
     @Override
@@ -203,6 +213,8 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
                 return true;
+               case R.id.home:
+                   favorits_cb.setOnCheckedChangeListener(null);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -242,6 +254,7 @@ public class DetailActivity extends AppCompatActivity {
                         List<VideoMetadata> videoMetadataResults = response.body().getResults();
                         mVideoAdapter.addVideosList(videoMetadataResults);
                         if (videoMetadataResults.size() == 0) {
+                            videosLabelTv.setVisibility(View.GONE);
                             mVideosRecyclerView.setVisibility(View.GONE);
                         }
                     } else {
@@ -293,6 +306,7 @@ public class DetailActivity extends AppCompatActivity {
                     List<ReviewMetadata> reviewMetadataResults =  response.body().getResults();
                     mReviewAdapter.addReviewsList(reviewMetadataResults);
                     if (reviewMetadataResults.size() == 0) {
+                        reviewsLabelTv.setVisibility(View.GONE);
                         mReviewsRecyclerView.setVisibility(View.GONE);
                     }
                 }
@@ -308,12 +322,26 @@ public class DetailActivity extends AppCompatActivity {
     public void onReviewClicked(View view, ReviewMetadata reviewMetadata) {
         if (reviewMetadata != null && !TextUtils.isEmpty(reviewMetadata.getUrl())) {
 
-            String url = reviewMetadata.getUrl();
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-            browserIntent.setData(Uri.parse(url));
-            if (browserIntent.resolveActivity(getPackageManager()) != null) {
-                startActivity(browserIntent);
+//            String url = reviewMetadata.getUrl();
+//            Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+//            browserIntent.setData(Uri.parse(url));
+//            if (browserIntent.resolveActivity(getPackageManager()) != null) {
+//                startActivity(browserIntent);
+//            }
+
+            if (movieDetailsMetadata != null) {
+                Context context = DetailActivity.this;
+                Intent intent = new Intent(context, ReadReviewActivity.class);
+                intent.putExtra(ReadReviewActivity.TITLE_KEY, movieMetadata.title);
+                intent.putExtra(ReadReviewActivity.REVIEW_KEY, reviewMetadata);
+                context.startActivity(intent);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        favorits_cb.setOnCheckedChangeListener(null);
+        super.onDestroy();
     }
 }
