@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, numOfCols));
         //StaggeredGridLayoutManager sglm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         //mRecyclerView.setLayoutManager(sglm);
-        mRecyclerView.addItemDecoration(new GridItemDecoration(10, numOfCols));
+        mRecyclerView.addItemDecoration(new GridItemDecoration(this));
         mMovieImageGridAdapter = new MovieImageGridAdapter(this, this);
         mRecyclerView.setAdapter(mMovieImageGridAdapter);
         //mViewModel.loadMovies(FAVORITES, 0);

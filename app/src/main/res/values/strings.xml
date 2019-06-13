@@ -16,8 +16,8 @@
 
     <string name="movie_poster">Movie Poster</string>
     <string name="sharing_blocked">Sharing is not available</string>
-    <string name="added_to_favorites">Added to favorites</string>
-    <string name="remove_from_favorites">Removed from favorites</string>
+    <string name="added_to_favorites">Item was added to favorites</string>
+    <string name="remove_from_favorites">Item was removed from favorites</string>
     <string name="pref_filter_key" translatable="false">filter_type</string>
     <string name="movie_transition" translatable="false">movie_transition</string>
     <string name="review_transition" translatable="false">review_transition</string>
