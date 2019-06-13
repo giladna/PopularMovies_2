@@ -146,7 +146,9 @@
                         android:layout_height="wrap_content"
                         android:paddingRight="@dimen/padding_half_generic"
                         android:textSize="@dimen/textsize_generic"
-                        android:text="@string/favorite"
+                        android:textAllCaps="false"
+                        android:textColor="@color/titleBackground"
+                        android:text="@string/mark_as_favorite"
                         android:textStyle="bold" />
 
                 </LinearLayout>

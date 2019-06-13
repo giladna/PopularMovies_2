@@ -4,44 +4,48 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ShareCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.udacity.popularmovies.database.AppDatabase;
 import com.udacity.popularmovies.model.DiscoverMoviesResponse;
 import com.udacity.popularmovies.model.MovieDetailsMetadata;
 import com.udacity.popularmovies.model.MovieMetadata;
 import com.udacity.popularmovies.model.ReviewMetadata;
 import com.udacity.popularmovies.model.VideoMetadata;
+import com.udacity.popularmovies.utilities.AppExecutors;
 import com.udacity.popularmovies.utilities.MovieAPI;
 import com.udacity.popularmovies.utilities.NetworkClient;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.udacity.popularmovies.utilities.NetworkUtils.NOW_PLAYING;
-
 public class DetailActivity extends AppCompatActivity {
     public static final String MOVIE_METADATA = "movie_metadata";
     public static final String MOVIE_DETAILS  = "movie_details";
+
+    private AppDatabase mDatabase;
+    private Executor diskExecutor;
 
     private ImageView poster_iv;
     private TextView title_tv;
@@ -49,6 +53,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView release_date_tv;
     private TextView duration_tv;
     private TextView rating_tv;
+    private CheckBox favorits_cb;
+
     private MovieMetadata movieMetadata;
     private MovieDetailsMetadata movieDetailsMetadata;
     private RecyclerView mVideosRecyclerView;
@@ -61,20 +67,52 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        this.mDatabase = AppDatabase.getDatabaseInstance(this);
+        this.diskExecutor = AppExecutors.getInstance().diskIO();
+
         poster_iv = findViewById(R.id.poster_iv);
         title_tv = findViewById(R.id.title_tv);
         overview_tv = findViewById(R.id.overview_tv);
         release_date_tv = findViewById(R.id.release_date_tv);
         duration_tv = findViewById(R.id.duration_tv);
         rating_tv = findViewById(R.id.rating_tv);
+        favorits_cb = findViewById(R.id.favorite_check_box);
+        favorits_cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                                                   @Override
+                                                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                       String snackBarText;
+
+                                                       if (isChecked) {
+                                                           diskExecutor.execute(new Runnable() {
+                                                               @Override
+                                                               public void run() {
+                                                                   mDatabase.movieMetadataDao().insert(movieMetadata);
+                                                               }
+                                                           });
+                                                           snackBarText = DetailActivity.this.getString(R.string.added_to_favorites, movieMetadata.getOriginalTitle());
+
+                                                       } else {
+                                                           diskExecutor.execute(new Runnable() {
+                                                               @Override
+                                                               public void run() {
+                                                                   mDatabase.movieMetadataDao().delete(movieMetadata);
+                                                               }
+                                                           });
+                                                           snackBarText = DetailActivity.this.getString(R.string.remove_from_favorites, movieMetadata.getOriginalTitle());
+
+                                                       }
+                                                       Snackbar.make(buttonView, snackBarText, Snackbar.LENGTH_SHORT).show();
+                                                   }
+                                               }
+        );
 
         Intent intent = getIntent();
         if (intent == null) {
             closeOnError();
             return;
         }
-        movieMetadata = (MovieMetadata) intent.getParcelableExtra(MOVIE_METADATA);
-        movieDetailsMetadata = (MovieDetailsMetadata) intent.getParcelableExtra(MOVIE_DETAILS);
+        movieMetadata = intent.getParcelableExtra(MOVIE_METADATA);
+        movieDetailsMetadata = intent.getParcelableExtra(MOVIE_DETAILS);
         if (movieMetadata == null || movieDetailsMetadata == null) {
             closeOnError();
             return;
@@ -131,6 +169,8 @@ public class DetailActivity extends AppCompatActivity {
         if (releaseDate != null) {
             release_date_tv.setText(releaseDate);
         }
+
+        favorits_cb.setChecked(movieMetadata.isInFavorites());
         fetchMovieTrailers(movieId);
         fetchMovieReviews(movieId);
     }
@@ -149,7 +189,7 @@ public class DetailActivity extends AppCompatActivity {
                     String title = "Share this movie with friends!";
                     String subject = "You must watch this movie!";
                     String text = (!TextUtils.isEmpty(movieDetailsMetadata.getHomepage()) ?
-                                   movieDetailsMetadata.getHomepage() : "https://www.themoviedb.org/movie/" + movieMetadata.getId());
+                            movieDetailsMetadata.getHomepage() : "https://www.themoviedb.org/movie/" + movieMetadata.getId());
 
                     ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(this)
                             .setChooserTitle(title)

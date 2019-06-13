@@ -121,7 +121,7 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
                 });
                 isInFavorits = false;
                 mMovieFavoritsView.setImageResource(R.drawable.ic_star_border_white_24px);
-                snackBarText = mContext.getString(R.string.remove_from_favorites);
+                snackBarText = mContext.getString(R.string.remove_from_favorites, movie.getOriginalTitle());
 
                 if (NetworkUtils.FAVORITES.equals(AppFilterPreferences.getSorting(mContext))) {
                     mMovieMetadataList.remove(position);
@@ -137,7 +137,7 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
                 });
                 isInFavorits = true;
                 mMovieFavoritsView.setImageResource(R.drawable.ic_star_white_24px);
-                snackBarText = mContext.getString(R.string.added_to_favorites);
+                snackBarText = mContext.getString(R.string.added_to_favorites, movie.getOriginalTitle());
             }
             Snackbar.make(view, snackBarText, Snackbar.LENGTH_SHORT).show();
         }
@@ -171,9 +171,11 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
                                 if (movie != null) {
                                     mMovieFavoritsView.setImageResource(R.drawable.ic_star_white_24px);
                                     isInFavorits = true;
+                                    mMovieMetadataList.get(position).setInFavorites(true);
                                 } else {
                                     mMovieFavoritsView.setImageResource(R.drawable.ic_star_border_white_24px);
                                     isInFavorits = false;
+                                    mMovieMetadataList.get(position).setInFavorites(false);
                                 }
                             }
                         });

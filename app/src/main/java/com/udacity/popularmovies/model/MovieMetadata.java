@@ -16,12 +16,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "movie")
 public class MovieMetadata implements Parcelable {
-
-    public MovieMetadata() {
-    }
-
     private static final String POSTER_URL_PREFIX = "https://image.tmdb.org/t/p/w342";//w185";
-
 
     @PrimaryKey
     @NonNull
@@ -67,6 +62,31 @@ public class MovieMetadata implements Parcelable {
     @SerializedName("poster_path")
     @Expose
     public String posterPath;
+
+    @Ignore
+    boolean isInFavorites;
+
+    public MovieMetadata() {
+    }
+
+    @Ignore
+    public MovieMetadata(Long id, Double popularity, Boolean video, Long voteCount, Double voteAverage, String title, String releaseDate, String originalLanguage, String originalTitle, List<Long> genreIds, String backdropPath, Boolean adult, String overview, String posterPath, boolean isInFavorites) {
+        this.popularity = popularity;
+        this.id = id;
+        this.video = video;
+        this.voteCount = voteCount;
+        this.voteAverage = voteAverage;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.genreIds = genreIds;
+        this.backdropPath = backdropPath;
+        this.adult = adult;
+        this.overview = overview;
+        this.posterPath = posterPath;
+        this.isInFavorites = isInFavorites;
+    }
 
     public Double getPopularity() {
         return popularity;
@@ -138,6 +158,14 @@ public class MovieMetadata implements Parcelable {
         return POSTER_URL_PREFIX + getBackdropPath();
     }
 
+    public boolean isInFavorites() {
+        return isInFavorites;
+    }
+
+    public void setInFavorites(boolean inFavorites) {
+        isInFavorites = inFavorites;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -159,24 +187,7 @@ public class MovieMetadata implements Parcelable {
         dest.writeValue(this.adult);
         dest.writeString(this.overview);
         dest.writeString(this.posterPath);
-    }
-
-    @Ignore
-    public MovieMetadata(Long id, Double popularity, Boolean video, Long voteCount, Double voteAverage, String title, String releaseDate, String originalLanguage, String originalTitle, List<Long> genreIds, String backdropPath, Boolean adult, String overview, String posterPath) {
-        this.popularity = popularity;
-        this.id = id;
-        this.video = video;
-        this.voteCount = voteCount;
-        this.voteAverage = voteAverage;
-        this.title = title;
-        this.releaseDate = releaseDate;
-        this.originalLanguage = originalLanguage;
-        this.originalTitle = originalTitle;
-        this.genreIds = genreIds;
-        this.backdropPath = backdropPath;
-        this.adult = adult;
-        this.overview = overview;
-        this.posterPath = posterPath;
+        dest.writeByte(this.isInFavorites ? (byte) 1 : (byte) 0);
     }
 
     protected MovieMetadata(Parcel in) {
@@ -195,9 +206,10 @@ public class MovieMetadata implements Parcelable {
         this.adult = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.overview = in.readString();
         this.posterPath = in.readString();
+        this.isInFavorites = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<MovieMetadata> CREATOR = new Parcelable.Creator<MovieMetadata>() {
+    public static final Creator<MovieMetadata> CREATOR = new Creator<MovieMetadata>() {
         @Override
         public MovieMetadata createFromParcel(Parcel source) {
             return new MovieMetadata(source);
