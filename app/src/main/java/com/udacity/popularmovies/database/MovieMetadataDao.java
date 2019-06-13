@@ -17,7 +17,7 @@ public interface MovieMetadataDao {
     LiveData<List<MovieMetadata>> getAll();
 
 
-    @Query("SELECT * FROM movie")
+    @Query("SELECT * FROM movie ORDER BY title")
     List<MovieMetadata> selectAll();
 
     @Query("SELECT * FROM movie WHERE id = :id")
