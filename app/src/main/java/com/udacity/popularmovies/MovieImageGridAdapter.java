@@ -1,6 +1,7 @@
 package com.udacity.popularmovies;
 
 import android.content.Context;
+import android.graphics.Movie;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.udacity.popularmovies.preferences.AppFilterPreferences;
 import com.udacity.popularmovies.utilities.AppExecutors;
 import com.udacity.popularmovies.utilities.NetworkUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -46,6 +48,24 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
     public void setMoviesData(List<MovieMetadata> moviesData) {
         mMovieMetadataList = moviesData;
         notifyDataSetChanged();
+    }
+
+    public void clearList() {
+        if (mMovieMetadataList == null) {
+            mMovieMetadataList = new ArrayList<>();
+        } else {
+            int itemCount = mMovieMetadataList.size();
+            mMovieMetadataList.clear();
+            notifyItemRangeRemoved(0, itemCount);
+        }
+    }
+
+    public void addMovies(List<MovieMetadata> moviesList) {
+        int positionStart = mMovieMetadataList.size();
+        mMovieMetadataList.clear();
+
+        mMovieMetadataList.addAll(moviesList);
+        notifyItemRangeInserted(positionStart, moviesList.size() - positionStart);
     }
 
     public interface MovieImageGridOnClickHandler {
@@ -123,7 +143,7 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
                 mMovieFavoritsView.setImageResource(R.drawable.ic_star_border_white_24px);
                 snackBarText = mContext.getString(R.string.remove_from_favorites, movie.getOriginalTitle());
 
-                if (NetworkUtils.FAVORITES.equals(AppFilterPreferences.getSorting(mContext))) {
+                if (NetworkUtils.FAVORITES.equals(AppFilterPreferences.getFilter(mContext))) {
                     mMovieMetadataList.remove(position);
                     notifyItemRemoved(position);
                 }

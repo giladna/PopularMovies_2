@@ -1,10 +1,14 @@
 package com.udacity.popularmovies;
 
-import android.arch.lifecycle.LiveData;
+
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Movie;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -27,6 +31,7 @@ import com.udacity.popularmovies.database.AppDatabase;
 import com.udacity.popularmovies.model.DiscoverMoviesResponse;
 import com.udacity.popularmovies.model.MovieDetailsMetadata;
 import com.udacity.popularmovies.model.MovieMetadata;
+import com.udacity.popularmovies.preferences.AppFilterPreferences;
 import com.udacity.popularmovies.utilities.MovieAPI;
 import com.udacity.popularmovies.utilities.NetworkClient;
 import com.udacity.popularmovies.utilities.NetworkUtils;
@@ -56,15 +61,25 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    private static final String PAGE_KEY = "PAGE_KEY";
+    private static final String COUNT_KEY = "COUNT_KEY";
+    private static final String RECYCLER_KEY = "RECYCLER_KEY";
+    private static final String FILTER_KEY = "FILTER_KEY";
+
     private int numOfCols;
     private AppDatabase mDatabase;
     private MainViewModel mViewModel;
     private RecyclerView mRecyclerView;
+    private GridLayoutManager mGridLayoutManager;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private MovieImageGridAdapter mMovieImageGridAdapter;
-
+    private Bundle mSavedInstanceState;
     private TextView mErrorMessageDisplay;
 
     private ProgressBar mLoadingIndicator;
+    private RecyclerViewScrollListener mScrollListener;;
+    private Menu activityMenu;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +91,95 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         mViewModel = ViewModelProviders.of(this).get(MainViewModel .class);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.movies_recyclerview);
-
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, numOfCols));
+        swipeRefreshLayout =  findViewById(R.id.swipeRefreshLayout);
+        mGridLayoutManager = new GridLayoutManager(this, numOfCols);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
         //StaggeredGridLayoutManager sglm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         //mRecyclerView.setLayoutManager(sglm);
         mRecyclerView.addItemDecoration(new GridItemDecoration(this));
         mMovieImageGridAdapter = new MovieImageGridAdapter(this, this);
         mRecyclerView.setAdapter(mMovieImageGridAdapter);
-        //mViewModel.loadMovies(FAVORITES, 0);
-        loadMoviesData(POPULARITY);
+        mScrollListener = new RecyclerViewScrollListener(mGridLayoutManager) {
+            @Override
+            public void onLoadMore(int page) {
+                mViewModel.loadMovies(AppFilterPreferences.getFilter(MainActivity.this), page);
+            }
+        };
+        //loadMoviesData(POPULARITY);
+        populateUI(AppFilterPreferences.getFilter(MainActivity.this));
+
+    }
+
+    private void populateUI(String selected) {
+        mViewModel.getMostPopularMovies().removeObservers(MainActivity.this);
+        mViewModel.getTopRatedMovies().removeObservers(MainActivity.this);
+        mViewModel.getMostPopularMovies().removeObservers(MainActivity.this);
+        mViewModel.getFavoriteMovies().removeObservers(MainActivity.this);
+
+        mMovieImageGridAdapter.clearList();
+
+        switch (selected) {
+            case POPULARITY:
+                mViewModel.getMostPopularMovies().observe(MainActivity.this,
+                        new Observer<List<MovieMetadata>>() {
+                            @Override
+                            public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                mMovieImageGridAdapter.addMovies(movies);
+                            }
+                        });
+                break;
+            case VOTE_AVARAGE:
+                mViewModel.getTopRatedMovies().observe(MainActivity.this,
+                        new Observer<List<MovieMetadata>>() {
+                            @Override
+                            public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                mMovieImageGridAdapter.addMovies(movies);
+                            }
+                        });
+                break;
+            case NOW_PLAYING:
+                mViewModel.getNowPlayingMovies().observe(MainActivity.this,
+                        new Observer<List<MovieMetadata>>() {
+                            @Override
+                            public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                mMovieImageGridAdapter.addMovies(movies);
+                            }
+                        });
+                break;
+            default:
+                swipeRefreshLayout.setEnabled(false);
+                mViewModel.getFavoriteMovies().observe(MainActivity.this,
+                        new Observer<List<MovieMetadata>>() {
+                            @Override
+                            public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                if (mMovieImageGridAdapter.getItemCount() < movies.size()) {
+                                    //hideStatus();
+                                    mMovieImageGridAdapter.addMovies(movies);
+                                } else if (movies.size() == 0) {
+                                    //showNoFavoriteStatus();
+                                }
+                            }
+                        });
+        }
+
+        if (mSavedInstanceState != null && selected != null && selected.equals(mSavedInstanceState.getInt(FILTER_KEY))) {
+            if (FAVORITES.equals(selected)) {
+                mRecyclerView.clearOnScrollListeners();
+            } else {
+                mScrollListener.setState(mSavedInstanceState.getInt(PAGE_KEY),
+                        mSavedInstanceState.getInt(COUNT_KEY));
+                mRecyclerView.addOnScrollListener(mScrollListener);
+            }
+            mGridLayoutManager
+                    .onRestoreInstanceState(mSavedInstanceState.getParcelable(RECYCLER_KEY));
+        } else {
+            if (FAVORITES.equals(selected)) {
+                mRecyclerView.clearOnScrollListeners();
+            } else {
+                mScrollListener.resetState();
+                mRecyclerView.addOnScrollListener(mScrollListener);
+            }
+        }
     }
 
     private void loadMoviesData(String filterType) {
@@ -164,9 +259,28 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     // This method creates the menu on the app
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
+        activityMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        String filter = AppFilterPreferences.getFilter(this);
+        MenuItem menuItem = null;
+        switch(filter) {
+            case POPULARITY:
+                menuItem = menu.findItem(R.id.most_popular);
+                break;
+            case VOTE_AVARAGE:
+                menuItem = menu.findItem(R.id.top_rated);
+                break;
+            case NOW_PLAYING:
+                menuItem = menu.findItem(R.id.now_playing);
+                break;
+            case FAVORITES:
+                menuItem = menu.findItem(R.id.favorits_menu);
+                break;
+        }
+        if (menuItem != null) {
+            menuItem.setChecked(true);
+        }
         return true;
     }
 
@@ -177,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         // We check what menu item was clicked and show a Toast
         if (id == R.id.most_popular) {
             item.setChecked(true);
@@ -185,7 +298,10 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
             //loadMoviesData(POPULARITY);
 
             //Retrofit
-            fetchMovies(POPULARITY);
+            //fetchMovies(POPULARITY);
+            AppFilterPreferences.setFilter(MainActivity.this, POPULARITY);
+            populateUI(POPULARITY);
+
             return true;
 
             // If exit was clicked close the app
@@ -195,7 +311,9 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
             //loadMoviesData(VOTE_AVARAGE);
 
             //Retrofit
-            fetchMovies(VOTE_AVARAGE);
+            //fetchMovies(VOTE_AVARAGE);
+            AppFilterPreferences.setFilter(MainActivity.this, VOTE_AVARAGE);
+            populateUI(VOTE_AVARAGE);
             return true;
         } else if (id == R.id.now_playing) {
             item.setChecked(true);
@@ -204,12 +322,16 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
             //loadMoviesData(NOW_PLAYING);
 
             //Retrofit
-            fetchMovies(NOW_PLAYING);
+            //fetchMovies(NOW_PLAYING);
+            AppFilterPreferences.setFilter(MainActivity.this, NOW_PLAYING);
+            populateUI(NOW_PLAYING);
         }  else if (id == R.id.favorits_menu) {
             item.setChecked(true);
 
             //Room
-            fetchMovies(FAVORITES);
+            //fetchMovies(FAVORITES);
+            AppFilterPreferences.setFilter(MainActivity.this, FAVORITES);
+            populateUI(FAVORITES);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -347,5 +469,20 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                 return 3;
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle bundle) {
+       // bundle.putInt(PAGE_KEY, mScrollListener.getPage());
+       // bundle.putInt(COUNT_KEY, mScrollListener.getCount());
+        bundle.putString(FILTER_KEY, AppFilterPreferences.getFilter(this));
+        bundle.putParcelable(RECYCLER_KEY, mGridLayoutManager.onSaveInstanceState());
+        super.onSaveInstanceState(bundle);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mSavedInstanceState = savedInstanceState;
     }
 }

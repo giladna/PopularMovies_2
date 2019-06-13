@@ -9,12 +9,12 @@ import com.udacity.popularmovies.utilities.NetworkUtils;
 
 
 public class AppFilterPreferences {
-    public static String getSorting(Context context) {
+    public static String getFilter(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(context.getString(R.string.pref_filter_key), NetworkUtils.NOW_PLAYING);
     }
 
-    public static void setSorting(Context context, String selectedFilterType) {
+    public static void setFilter(Context context, String selectedFilterType) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(context.getString(R.string.pref_filter_key), selectedFilterType);

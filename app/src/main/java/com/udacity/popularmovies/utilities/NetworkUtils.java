@@ -62,14 +62,20 @@ public class NetworkUtils {
 
     public static URL buildUrl(String moviesSortQuery, int page) {
         Uri builtUri;
-        if (POPULARITY.equals(moviesSortQuery)) {
-            builtUri = Uri.parse(POPULAR_MOVIES_DB_BASE_URL).buildUpon()
+        if (VOTE_AVARAGE.equals(moviesSortQuery)) {
+            builtUri = Uri.parse(TOP_RATED_MOVIES_DB_BASE_URL).buildUpon()
+                    .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
+                    .appendQueryParameter(PARAM_LANG, "en-US")
+                    .appendQueryParameter(PARAM_PAGE, String.valueOf(page))
+                    .build();
+        } else if (NOW_PLAYING.equals(moviesSortQuery)) {
+            builtUri = Uri.parse(NOW_PLAYING_MOVIES_DB_BASE_URL).buildUpon()
                     .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                     .appendQueryParameter(PARAM_LANG, "en-US")
                     .appendQueryParameter(PARAM_PAGE, String.valueOf(page))
                     .build();
         } else {
-            builtUri = Uri.parse(TOP_RATED_MOVIES_DB_BASE_URL).buildUpon()
+            builtUri = Uri.parse(POPULAR_MOVIES_DB_BASE_URL).buildUpon()
                     .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                     .appendQueryParameter(PARAM_LANG, "en-US")
                     .appendQueryParameter(PARAM_PAGE, String.valueOf(page))
