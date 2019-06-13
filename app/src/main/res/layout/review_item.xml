@@ -78,7 +78,8 @@
                 android:layout_toStartOf="@id/expandIv"
                 android:gravity="center_vertical"
                 android:onClick="@{() -> presenter.onReviewClicked(authorTv, reviewMetadata)}"
-                android:text="@string/view_more"
+                android:text="@string/read_more"
+                android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/colorBlack" />
 
@@ -91,7 +92,7 @@
                 android:layout_below="@id/divider"
                 android:contentDescription="@string/read_more"
                 android:onClick="@{(view) -> presenter.onReviewClicked(view, reviewMetadata)}"
-                android:padding="@dimen/image_size"
+                android:padding="@dimen/margin_medium"
                 app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
 
         </RelativeLayout>
