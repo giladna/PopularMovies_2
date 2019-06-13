@@ -175,6 +175,11 @@
             android:background="#dadada"
             android:layout_margin="@dimen/padding_generic" />
 
+        <TextView
+            android:id="@+id/videosLabel"
+            style="@style/Subject"
+            android:text="@string/videos" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/videos_recyclerview"
             android:layout_width="match_parent"
@@ -186,6 +191,11 @@
             android:layout_height="1dp"
             android:background="#dadada"
             android:layout_margin="@dimen/padding_generic" />
+
+        <TextView
+            android:id="@+id/reviewsLabel"
+            style="@style/Subject"
+            android:text="@string/reviews" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/reviews_recyclerview"
