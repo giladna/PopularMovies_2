@@ -1,2 +1,2 @@
 # PopularMovies_2
-Adding Trailers, Reviews, and Favorites
+help users discover popular and recent movies

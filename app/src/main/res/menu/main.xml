@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item android:id="@+id/action_settings"
+        android:title="@string/filter"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:enabled="true">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/most_popular"
+                    android:title="@string/action_most_popular"
+                    android:orderInCategory="100"
+                    android:checked="true"
+                    app:showAsAction="never" />
+
+                <item android:id="@+id/top_rated"
+                    android:title="@string/action_top_rated"
+                    app:showAsAction="never"
+                    android:orderInCategory="101" />
+
+                <item android:id="@+id/now_playing"
+                    android:title="@string/action_now_playing"
+                    app:showAsAction="never"
+                    android:orderInCategory="101" />
+
+                <item android:id="@+id/favorits_menu"
+                    android:title="@string/action_favorites"
+                    app:showAsAction="never"
+                    android:orderInCategory="101" />
+            </group>
+        </menu>/>
+    </item>
+</menu>

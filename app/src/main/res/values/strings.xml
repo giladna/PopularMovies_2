@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Pop Movies</string>
+    <string name="error_message">An error has occurred. Please try again</string>
+    <string name="movie_detail">MovieDetail</string>
+    <string name="action_most_popular">Most Popular</string>
+    <string name="action_top_rated">Top Rated</string>
+    <string name="action_favorites">Favorites</string>
+    <string name="action_now_playing">Now Playing</string>
+    <string name="share">Share</string>
+    <string name="filter">Filter</string>
+    <string name="rating_label">Rating:</string>
+    <string name="duration_label">Duration:</string>
+    <string name="date_label">Release Date:</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="sharing_blocked">Sharing is not available</string>
+    <string name="pref_filter_key" translatable="false">filter_type</string>
+    <string name="added_to_favorites">%1$s was added to favorites.</string>
+    <string name="remove_from_favorites">%1$s was removed from favorites.</string>
+    <string name="favorite">Favorite</string>
+    <string name="video">Video</string>
+    <string name="read_more">Read More</string>
+    <string name="view_more">View More</string>
+    <string name="mark_as_favorite">Mark as favorite</string>
+    <string name="overview">Overview</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
+</resources>

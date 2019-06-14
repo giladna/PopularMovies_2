@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ReviewActivity">
+
+        <TextView
+            android:id="@+id/reviewAuthorTv"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/review_author_height"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:layout_marginRight="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:singleLine="true"
+            android:textColor="@color/titleBackground"
+            android:textStyle="bold"
+            android:textSize="@dimen/review_author_text_size" />
+
+        <TextView
+            android:id="@+id/reviewContentTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reviewAuthorTv"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:layout_marginRight="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:paddingBottom="@dimen/padding_generic"
+
+            android:textColor="@color/cardview_dark_background"
+            android:textSize="@dimen/review_content_text_size" />
+
+    </RelativeLayout>
+</ScrollView>
+
