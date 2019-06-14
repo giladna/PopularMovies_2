@@ -55,13 +55,13 @@ public class DetailActivity extends AppCompatActivity {
     private TextView rating_tv;
     private CheckBox favorits_cb;
 
-    private TextView videosLabelTv;
+    private TextView trailersLabelTv;
     private TextView reviewsLabelTv;
 
 
     private MovieMetadata movieMetadata;
     private MovieDetailsMetadata movieDetailsMetadata;
-    private RecyclerView mVideosRecyclerView;
+    private RecyclerView mTrailersRecyclerView;
     private RecyclerView mReviewsRecyclerView;
     private VideoAdapter mVideoAdapter;
     private ReviewAdapter mReviewAdapter;
@@ -81,7 +81,7 @@ public class DetailActivity extends AppCompatActivity {
         duration_tv = findViewById(R.id.duration_tv);
         rating_tv = findViewById(R.id.rating_tv);
         favorits_cb = findViewById(R.id.favorite_check_box);
-        videosLabelTv = findViewById(R.id.videosLabelTv);
+        trailersLabelTv = findViewById(R.id.trailersLabelTv);
         reviewsLabelTv = findViewById(R.id.reviewsLabelTv);
 
         Intent intent = getIntent();
@@ -221,19 +221,19 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void fetchMovieTrailers(Long movieId) {
-        mVideosRecyclerView = findViewById(R.id.videos_recyclerview);
+        mTrailersRecyclerView = findViewById(R.id.trailers_recyclerview);
 
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mVideosRecyclerView.setLayoutManager(layoutManager);
-        mVideosRecyclerView.setHasFixedSize(true);
-        mVideosRecyclerView.setNestedScrollingEnabled(false);
+        mTrailersRecyclerView.setLayoutManager(layoutManager);
+        mTrailersRecyclerView.setHasFixedSize(true);
+        mTrailersRecyclerView.setNestedScrollingEnabled(false);
 
         RecyclerView.ItemDecoration itemDecoration = new HorizontalItemDecoration(this);
-        mVideosRecyclerView.addItemDecoration(itemDecoration);
+        mTrailersRecyclerView.addItemDecoration(itemDecoration);
 
         mVideoAdapter = new VideoAdapter(this);
-        mVideosRecyclerView.setAdapter(mVideoAdapter);
+        mTrailersRecyclerView.setAdapter(mVideoAdapter);
 
         Retrofit retrofit = NetworkClient.getRetrofitClient();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
@@ -254,8 +254,8 @@ public class DetailActivity extends AppCompatActivity {
                         List<VideoMetadata> videoMetadataResults = response.body().getResults();
                         mVideoAdapter.addVideosList(videoMetadataResults);
                         if (videoMetadataResults.size() == 0) {
-                            videosLabelTv.setVisibility(View.GONE);
-                            mVideosRecyclerView.setVisibility(View.GONE);
+                            trailersLabelTv.setVisibility(View.GONE);
+                            mTrailersRecyclerView.setVisibility(View.GONE);
                         }
                     } else {
                         showErrorMessage();
