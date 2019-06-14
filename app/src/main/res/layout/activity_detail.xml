@@ -155,67 +155,17 @@
             </LinearLayout>
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#dadada"
-            android:layout_margin="@dimen/padding_generic" />
+        <include layout="@layout/seperator_include" />
 
-        <TextView
-            android:id="@+id/overviewLabel"
-            style="@style/Subject"
-            android:text="@string/overview" />
+        <include layout="@layout/overview_include" />
 
-        <TextView
-            android:id="@+id/overview_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/textsize_generic"
-            android:paddingLeft="@dimen/padding_generic"
-            android:paddingRight="@dimen/padding_generic"
-            android:textColor="@color/colorBlack" />
+        <include layout="@layout/seperator_include" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#dadada"
-            android:layout_margin="@dimen/padding_generic" />
+        <include layout="@layout/trailers_include" />
 
-        <TextView
-            android:id="@+id/trailersLabelTv"
-            style="@style/Subject"
-            android:text="@string/trailers" />
+        <include layout="@layout/seperator_include" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/trailers_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#dadada"
-            android:layout_margin="@dimen/padding_generic" />
-
-        <TextView
-            android:id="@+id/reviewsLabelTv"
-            style="@style/Subject"
-            android:text="@string/reviews" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/reviews_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
-
-        <!--<include-->
-        <!--android:id="@+id/movie_videos"-->
-        <!--layout="@layout/detail_video" />-->
-
-        <!--<include-->
-        <!--android:id="@+id/movie_reviews"-->
-        <!--layout="@layout/detail_review" />-->
+        <include layout="@layout/reviews_include" />
 
     </LinearLayout>
 </ScrollView>
