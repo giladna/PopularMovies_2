@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -43,127 +41,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:paddingLeft="@dimen/padding_generic_x_2"
-                        android:textSize="@dimen/textsize_generic"
-                        android:text="@string/rating_label"
-                        android:textStyle="bold" />
+                <include layout="@layout/rating_include" />
 
-                    <TextView
-                        android:id="@+id/rating_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:paddingLeft="@dimen/padding_half_generic"
-                        android:paddingRight="@dimen/padding_half_generic"
-                        android:textSize="@dimen/textsize_generic"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                <include layout="@layout/duration_include" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:paddingLeft="@dimen/padding_generic_x_2"
-                        android:textSize="@dimen/textsize_generic"
-                        android:text="@string/duration_label"
-                        android:textStyle="bold" />
+                <include layout="@layout/release_date_include" />
 
-                    <TextView
-                        android:id="@+id/duration_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:paddingLeft="@dimen/padding_half_generic"
-                        android:paddingRight="@dimen/padding_half_generic"
-                        android:textSize="@dimen/textsize_generic"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:paddingLeft="@dimen/padding_generic_x_2"
-                        android:textSize="@dimen/textsize_generic"
-                        android:text="@string/date_label"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/release_date_tv"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingRight="@dimen/padding_half_generic"
-                        android:paddingLeft="@dimen/padding_half_generic"
-                        android:textSize="@dimen/textsize_generic"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:paddingLeft="@dimen/padding_generic_x_2"
-                        android:textSize="@dimen/textsize_generic"
-                        android:text="" />
-
-                    <CheckBox
-                        android:id="@+id/favorite_check_box"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:button="@android:drawable/btn_star"
-                        android:paddingTop="@dimen/padding_generic"
-                        android:paddingRight="@dimen/padding_half_generic"
-                        android:paddingLeft="@dimen/padding_half_generic"
-                        android:background="@android:color/transparent" />
-
-                    <TextView
-                        android:paddingTop="@dimen/padding_generic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingRight="@dimen/padding_half_generic"
-                        android:textSize="@dimen/textsize_generic"
-                        android:textAllCaps="false"
-                        android:textColor="@color/titleBackground"
-                        android:text="@string/mark_as_favorite"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
+                <include layout="@layout/favorites_include" />
             </LinearLayout>
         </LinearLayout>
 
-        <include layout="@layout/seperator_include" />
+        <include layout="@layout/separator_include" />
 
         <include layout="@layout/overview_include" />
 
-        <include layout="@layout/seperator_include" />
+        <include layout="@layout/separator_include" />
 
         <include layout="@layout/trailers_include" />
 
-        <include layout="@layout/seperator_include" />
+        <include layout="@layout/separator_include" />
 
         <include layout="@layout/reviews_include" />
 

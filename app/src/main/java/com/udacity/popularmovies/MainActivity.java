@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     private MainViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private GridLayoutManager mGridLayoutManager;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private MovieImageGridAdapter mMovieImageGridAdapter;
     private Bundle mSavedInstanceState;
     private TextView mErrorMessageDisplay;
@@ -91,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         mViewModel = ViewModelProviders.of(this).get(MainViewModel .class);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.movies_recyclerview);
-        swipeRefreshLayout =  findViewById(R.id.swipeRefreshLayout);
         mGridLayoutManager = new GridLayoutManager(this, numOfCols);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         //StaggeredGridLayoutManager sglm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -147,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                         });
                 break;
             default:
-                swipeRefreshLayout.setEnabled(false);
                 mViewModel.getFavoriteMovies().observe(MainActivity.this,
                         new Observer<List<MovieMetadata>>() {
                             @Override
