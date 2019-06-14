@@ -182,12 +182,12 @@
             android:layout_margin="@dimen/padding_generic" />
 
         <TextView
-            android:id="@+id/videosLabelTv"
+            android:id="@+id/trailersLabelTv"
             style="@style/Subject"
-            android:text="@string/videos" />
+            android:text="@string/trailers" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/videos_recyclerview"
+            android:id="@+id/trailers_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>

@@ -24,6 +24,6 @@
     <string name="view_more">View More</string>
     <string name="mark_as_favorite">Mark as favorite</string>
     <string name="overview">Overview</string>
-    <string name="videos">Trailers</string>
+    <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
 </resources>
