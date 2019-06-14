@@ -23,8 +23,7 @@
             android:singleLine="true"
             android:textColor="@color/titleBackground"
             android:textStyle="bold"
-            android:textSize="@dimen/review_author_text_size"
-            android:transitionName="@string/review_transition" />
+            android:textSize="@dimen/review_author_text_size" />
 
         <TextView
             android:id="@+id/reviewContentTv"
@@ -36,6 +35,8 @@
             android:layout_marginRight="@dimen/margin_medium"
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
+            android:paddingBottom="@dimen/padding_generic"
+
             android:textColor="@color/cardview_dark_background"
             android:textSize="@dimen/review_content_text_size" />
 

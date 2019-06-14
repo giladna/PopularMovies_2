@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_detail">
 
-
-    <TextView
-        android:id="@+id/overviewLabel"
-        style="@style/Subject"
-        android:text="@string/overview" />
-
-    <TextView
-        android:id="@+id/overview_tv"
+    <android.support.v7.widget.CardView
+        android:id="@+id/overviewCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/textsize_generic"
-        android:paddingLeft="@dimen/padding_generic"
-        android:paddingRight="@dimen/padding_generic"
-        android:textColor="@color/colorBlack" />
+        app:cardElevation="2dp">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/overviewLabel"
+                style="@style/subjectStyle"
+                android:paddingTop="@dimen/padding_generic"
+                android:paddingBottom="@dimen/padding_half_generic"
+                android:text="@string/overview" />
+
+            <TextView
+                android:id="@+id/overview_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/overviewLabel"
+                android:textSize="@dimen/textsize_generic"
+                android:paddingLeft="@dimen/padding_generic"
+                android:paddingRight="@dimen/padding_generic"
+                android:paddingBottom="@dimen/padding_generic"
+                android:textColor="@color/colorBlack" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </merge>

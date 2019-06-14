@@ -16,8 +16,6 @@
     <string name="pref_filter_key" translatable="false">filter_type</string>
     <string name="added_to_favorites">%1$s was added to favorites.</string>
     <string name="remove_from_favorites">%1$s was removed from favorites.</string>
-    <string name="movie_transition" translatable="false">movie_transition</string>
-    <string name="review_transition" translatable="false">review_transition</string>
     <string name="favorite">Favorite</string>
     <string name="video">Video</string>
     <string name="read_more">Read More</string>

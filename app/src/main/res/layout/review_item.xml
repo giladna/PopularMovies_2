@@ -50,8 +50,7 @@ xmlns:tools="http://schemas.android.com/tools">
                 android:text="@{reviewMetadata.author}"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"
-                android:textSize="@dimen/review_author_text_size"
-                android:transitionName="@string/review_transition" />
+                android:textSize="@dimen/review_author_text_size" />
 
             <TextView
                 android:id="@+id/contentTv"

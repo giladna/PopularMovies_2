@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/reviewsLabelTv"
-        style="@style/Subject"
+        style="@style/subjectStyle"
         android:text="@string/reviews" />
 
     <android.support.v7.widget.RecyclerView
