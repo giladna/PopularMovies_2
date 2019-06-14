@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
-import com.udacity.popularmovies.databinding.VideoItemBinding;
+import com.udacity.popularmovies.databinding.TrailerItemBinding;
 import com.udacity.popularmovies.model.VideoMetadata;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
     @Override
     public VideoAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-        VideoItemBinding binding = VideoItemBinding.inflate(layoutInflater, parent, false);
+        TrailerItemBinding binding = TrailerItemBinding.inflate(layoutInflater, parent, false);
         return new VideoAdapterViewHolder(binding);
     }
 
@@ -57,9 +57,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
     }
 
     public class VideoAdapterViewHolder extends RecyclerView.ViewHolder {
-        VideoItemBinding binding;
+        TrailerItemBinding binding;
 
-        VideoAdapterViewHolder(VideoItemBinding binding) {
+        VideoAdapterViewHolder(TrailerItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
@@ -73,7 +73,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
                     .load(photoUrl)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.error)
-                    .into(binding.videoIv);
+                    .into(binding.trailerIv);
         }
 
         public void onClickVideo(String videoUrl) {

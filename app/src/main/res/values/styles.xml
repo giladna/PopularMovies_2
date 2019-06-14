@@ -23,4 +23,23 @@
         <item name="android:textColor">@color/titleBackground</item>
     </style>
 
+    <style name="TextViewLabelStyle">
+        <item name="android:textSize">@dimen/textsize_generic</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">@dimen/padding_generic_x_2</item>
+        <item name="android:paddingTop">@dimen/padding_generic</item>
+    </style>
+
+    <style name="TextViewValueStyle">
+        android:paddingTop="@dimen/padding_generic"
+        android:paddingRight="@dimen/padding_half_generic"
+        android:paddingLeft="@dimen/padding_half_generic"
+        android:textSize="@dimen/textsize_generic"
+        android:textStyle="bold"
+        <item name="android:textSize">@dimen/textsize_generic</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">@dimen/padding_half_generic</item>
+        <item name="android:paddingRight">@dimen/padding_half_generic</item>
+        <item name="android:paddingTop">@dimen/padding_generic</item>
+    </style>
 </resources>

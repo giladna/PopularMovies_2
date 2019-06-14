@@ -11,19 +11,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_generic"
-        android:paddingLeft="@dimen/padding_generic_x_2"
-        android:textSize="@dimen/textsize_generic"
         android:text="@string/duration_label"
-        android:textStyle="bold" />
+        style="@style/TextViewLabelStyle" />
 
     <TextView
         android:id="@+id/duration_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_generic"
-        android:paddingLeft="@dimen/padding_half_generic"
-        android:paddingRight="@dimen/padding_half_generic"
-        android:textSize="@dimen/textsize_generic"
-        android:textStyle="bold" />
+        style="@style/TextViewValueStyle" />
 </LinearLayout>
