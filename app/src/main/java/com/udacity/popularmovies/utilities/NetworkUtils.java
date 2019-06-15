@@ -26,9 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-/**
- * These utilities will be used to communicate with the network.
- */
 public class NetworkUtils {
 
     public static final String NOW_PLAYING = "now_playing";

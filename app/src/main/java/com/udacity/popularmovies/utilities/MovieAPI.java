@@ -1,7 +1,5 @@
 package com.udacity.popularmovies.utilities;
 
-import android.database.Observable;
-
 import com.udacity.popularmovies.model.DiscoverMoviesResponse;
 import com.udacity.popularmovies.model.MovieDetailsMetadata;
 import com.udacity.popularmovies.model.MovieMetadata;

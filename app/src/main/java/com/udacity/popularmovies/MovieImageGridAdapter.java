@@ -1,7 +1,6 @@
 package com.udacity.popularmovies;
 
 import android.content.Context;
-import android.graphics.Movie;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -100,16 +99,16 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
     public class MovieItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView mMovieImageView;
-        ImageView mMovieFavoritsView;
+        ImageView mMovieFavoritesView;
         TextView mMovieTitle;
-        boolean isInFavorits;
+        boolean isInFavorites;
 
 
         public MovieItemViewHolder(@NonNull View itemView) {
             super(itemView);
             mMovieImageView = itemView.findViewById(R.id.movie_image_view);
-            mMovieFavoritsView = itemView.findViewById(R.id.favorite_image_view);
-            mMovieFavoritsView.setOnClickListener(new View.OnClickListener() {
+            mMovieFavoritesView = itemView.findViewById(R.id.favorite_image_view);
+            mMovieFavoritesView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onClickFavorite(v);
@@ -132,15 +131,15 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
             int position = getAdapterPosition();
             final MovieMetadata movie = mMovieMetadataList.get(position);
 
-            if (isInFavorits) {
+            if (isInFavorites) {
                 diskExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         mDatabase.movieMetadataDao().delete(movie);
                     }
                 });
-                isInFavorits = false;
-                mMovieFavoritsView.setImageResource(R.drawable.ic_star_border_white_24px);
+                isInFavorites = false;
+                mMovieFavoritesView.setImageResource(R.drawable.ic_star_border_white_24px);
                 snackBarText = mContext.getString(R.string.remove_from_favorites, movie.getOriginalTitle());
 
                 if (NetworkUtils.FAVORITES.equals(AppFilterPreferences.getFilter(mContext))) {
@@ -155,8 +154,8 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
                         mDatabase.movieMetadataDao().insert(movie);
                     }
                 });
-                isInFavorits = true;
-                mMovieFavoritsView.setImageResource(R.drawable.ic_star_white_24px);
+                isInFavorites = true;
+                mMovieFavoritesView.setImageResource(R.drawable.ic_star_white_24px);
                 snackBarText = mContext.getString(R.string.added_to_favorites, movie.getOriginalTitle());
             }
             Snackbar.make(view, snackBarText, Snackbar.LENGTH_SHORT).show();
@@ -189,12 +188,12 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
                             @Override
                             public void run() {
                                 if (movie != null) {
-                                    mMovieFavoritsView.setImageResource(R.drawable.ic_star_white_24px);
-                                    isInFavorits = true;
+                                    mMovieFavoritesView.setImageResource(R.drawable.ic_star_white_24px);
+                                    isInFavorites = true;
                                     mMovieMetadataList.get(position).setInFavorites(true);
                                 } else {
-                                    mMovieFavoritsView.setImageResource(R.drawable.ic_star_border_white_24px);
-                                    isInFavorits = false;
+                                    mMovieFavoritesView.setImageResource(R.drawable.ic_star_border_white_24px);
+                                    isInFavorites = false;
                                     mMovieMetadataList.get(position).setInFavorites(false);
                                 }
                             }
