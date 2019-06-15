@@ -74,9 +74,7 @@ public class MovieImageGridAdapter extends RecyclerView.Adapter<MovieImageGridAd
     @NonNull
     @Override
     public MovieImageGridAdapter.MovieItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Context viewContext = viewGroup.getContext();
         int layoutIdForGridItem = R.layout.movie_grid_item;
-
         boolean shouldAttachToParentImmediately = false;
         View view = mInflater.inflate(layoutIdForGridItem, viewGroup, shouldAttachToParentImmediately);
         return new MovieItemViewHolder(view);
