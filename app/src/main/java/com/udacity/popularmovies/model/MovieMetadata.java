@@ -200,7 +200,7 @@ public class MovieMetadata implements Parcelable {
         this.releaseDate = in.readString();
         this.originalLanguage = in.readString();
         this.originalTitle = in.readString();
-        this.genreIds = new ArrayList<Long>();
+        this.genreIds = new ArrayList<>();
         in.readList(this.genreIds, Long.class.getClassLoader());
         this.backdropPath = in.readString();
         this.adult = (Boolean) in.readValue(Boolean.class.getClassLoader());

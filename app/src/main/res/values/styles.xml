@@ -30,16 +30,24 @@
         <item name="android:paddingTop">@dimen/padding_generic</item>
     </style>
 
+    <style name="TextViewMarginMediumStyle">
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:layout_marginLeft">@dimen/margin_medium</item>
+        <item name="android:layout_marginRight">@dimen/margin_medium</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
+    </style>
+
     <style name="TextViewValueStyle">
-        android:paddingTop="@dimen/padding_generic"
-        android:paddingRight="@dimen/padding_half_generic"
-        android:paddingLeft="@dimen/padding_half_generic"
-        android:textSize="@dimen/textsize_generic"
-        android:textStyle="bold"
         <item name="android:textSize">@dimen/textsize_generic</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">@dimen/padding_half_generic</item>
         <item name="android:paddingRight">@dimen/padding_half_generic</item>
         <item name="android:paddingTop">@dimen/padding_generic</item>
+    </style>
+
+    <style name="TextViewErrorStyle">
+        <item name="android:padding">@dimen/padding_generic</item>
+        <item name="android:textSize">@dimen/textsize_error</item>
     </style>
 </resources>

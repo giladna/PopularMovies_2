@@ -5,17 +5,14 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +53,8 @@ import static com.udacity.popularmovies.utilities.NetworkUtils.VOTE_AVARAGE;
 
 public class MainActivity extends AppCompatActivity implements MovieImageGridAdapter.MovieImageGridOnClickHandler {
 
+    public static final int NUM_OF_COLS = 3;
+
     static
     {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -77,14 +76,12 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
 
     private ProgressBar mLoadingIndicator;
     private RecyclerViewScrollListener mScrollListener;;
-    private Menu activityMenu;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        numOfCols = 3;//getNumOfCols();
+        numOfCols = NUM_OF_COLS;
         mDatabase = AppDatabase.getDatabaseInstance(this);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel .class);
@@ -122,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                         new Observer<List<MovieMetadata>>() {
                             @Override
                             public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                toastNoValuesIfNeeded(movies);
                                 mMovieImageGridAdapter.addMovies(movies);
                             }
                         });
@@ -131,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                         new Observer<List<MovieMetadata>>() {
                             @Override
                             public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                toastNoValuesIfNeeded(movies);
                                 mMovieImageGridAdapter.addMovies(movies);
                             }
                         });
@@ -140,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                         new Observer<List<MovieMetadata>>() {
                             @Override
                             public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                toastNoValuesIfNeeded(movies);
                                 mMovieImageGridAdapter.addMovies(movies);
                             }
                         });
@@ -149,17 +149,15 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                         new Observer<List<MovieMetadata>>() {
                             @Override
                             public void onChanged(@Nullable List<MovieMetadata> movies) {
+                                toastNoValuesIfNeeded(movies);
                                 if (mMovieImageGridAdapter.getItemCount() < movies.size()) {
-                                    //hideStatus();
                                     mMovieImageGridAdapter.addMovies(movies);
-                                } else if (movies.size() == 0) {
-                                    //showNoFavoriteStatus();
                                 }
                             }
                         });
         }
 
-        if (mSavedInstanceState != null && selected != null && selected.equals(mSavedInstanceState.getInt(FILTER_KEY))) {
+        if (mSavedInstanceState != null && selected.equals(mSavedInstanceState.getString(FILTER_KEY))) {
             if (FAVORITES.equals(selected)) {
                 mRecyclerView.clearOnScrollListeners();
             } else {
@@ -176,6 +174,12 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                 mScrollListener.resetState();
                 mRecyclerView.addOnScrollListener(mScrollListener);
             }
+        }
+    }
+
+    private void toastNoValuesIfNeeded(@Nullable List<MovieMetadata> movies) {
+        if (movies == null || movies.size() == 0) {
+            Snackbar.make(mErrorMessageDisplay, MainActivity.this.getString(R.string.no_values), Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -256,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     // This method creates the menu on the app
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        activityMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         String filter = AppFilterPreferences.getFilter(this);
@@ -284,11 +287,7 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
     // Called when a options menu item is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        // We check what menu item was clicked and show a Toast
         if (id == R.id.most_popular) {
             item.setChecked(true);
             //Async
@@ -422,11 +421,9 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
                 JsonObject jsonMoviesResponseJsonObject = parser.parse(jsonMoviesResponse).getAsJsonObject();
                 JsonArray resultsJsonArray = jsonMoviesResponseJsonObject.get("results").getAsJsonArray();
                 Gson gson = new Gson();
-                //MovieMetadata[] mcArray = gson.fromJson(resultsJsonArray.getAsString(), MovieMetadata[].class);
                 Type listType = new TypeToken<List<MovieMetadata>>(){}.getType();
-                List<MovieMetadata> discoverMoviesResponse = new Gson().fromJson(resultsJsonArray, listType);
-                //DiscoverMoviesResponse<MovieMetadata> discoverMoviesResponse = gson.fromJson(jsonMoviesResponse, DiscoverMoviesResponse.class);
-                return discoverMoviesResponse;
+                List<MovieMetadata> discoverMoviesResponseList = new Gson().fromJson(resultsJsonArray, listType);
+                return discoverMoviesResponseList;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -445,33 +442,8 @@ public class MainActivity extends AppCompatActivity implements MovieImageGridAda
         }
     }
 
-    private int getNumOfCols() {
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
-
-        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
-            if (width > 1000) {
-                return 3;
-            } else {
-                return 2;
-            }
-        } else {
-            if (width > 1700) {
-                return 5;
-            } else if (width > 1200) {
-                return 4;
-            } else {
-                return 3;
-            }
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle bundle) {
-       // bundle.putInt(PAGE_KEY, mScrollListener.getPage());
-       // bundle.putInt(COUNT_KEY, mScrollListener.getCount());
         bundle.putString(FILTER_KEY, AppFilterPreferences.getFilter(this));
         bundle.putParcelable(RECYCLER_KEY, mGridLayoutManager.onSaveInstanceState());
         super.onSaveInstanceState(bundle);

@@ -150,8 +150,8 @@ public class DetailActivity extends AppCompatActivity {
 
         favorits_cb.setChecked(movieMetadata.isInFavorites());
         addCheckBoxListener(movieMetadata);
-        fetchMovieTrailers(movieId);
-        fetchMovieReviews(movieId);
+        fetchMovieTrailers();
+        fetchMovieReviews();
     }
 
     private void addCheckBoxListener(final MovieMetadata movieMetadata) {
@@ -220,7 +220,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    private void fetchMovieTrailers(Long movieId) {
+    private void fetchMovieTrailers() {
         mTrailersRecyclerView = findViewById(R.id.trailers_recyclerview);
 
         LinearLayoutManager layoutManager =
@@ -249,7 +249,6 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (response.body() != null) {
                     List<VideoMetadata> discoverVideosResponse =  response.body().getResults();
-                    //mLoadingIndicator.setVisibility(View.INVISIBLE);
                     if (discoverVideosResponse != null) {
                         List<VideoMetadata> videoMetadataResults = response.body().getResults();
                         mVideoAdapter.addVideosList(videoMetadataResults);
@@ -274,7 +273,7 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(DetailActivity.this, getString(R.string.error_message), Toast.LENGTH_LONG).show();
     }
 
-    private void fetchMovieReviews(Long movieId) {
+    private void fetchMovieReviews() {
 
         mReviewsRecyclerView = findViewById(R.id.reviews_recyclerview);
 

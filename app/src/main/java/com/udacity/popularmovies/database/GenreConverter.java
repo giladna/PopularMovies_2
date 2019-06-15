@@ -22,9 +22,10 @@ public class GenreConverter {
 
     @TypeConverter
     public String writingStringFromList(List<Long> list) {
-        String genreIds = "";
+        StringBuilder genreIds = new StringBuilder();
         for (long i : list) {
-            genreIds += "," + i;
+            genreIds.append(",").append(i);
         }
-        return genreIds;
-    }}
+        return genreIds.toString();
+    }
+}
